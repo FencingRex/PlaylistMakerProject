@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Playlist Maker</string>
     <string name="say_hello">Привет Практикум</string>
+    <string name="settings">Настройки</string>
+    <string name="search">Поиск</string>
+    <string name="mediteka">Медиатека</string>
 </resources>

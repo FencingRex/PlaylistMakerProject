@@ -2,10 +2,64 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:background="#1A1B22"
+    android:background="@color/yp_blue"
     android:padding="20dp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <!--android:padding="20dp">-->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:text="Playlist Maker"
+            android:textColor="@color/white"
+            android:textSize="20sp"/>
+    </LinearLayout>
 
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_weight="1"
+        android:backgroundTint="@color/white"
+        app:icon="@drawable/search_light_mode"
+        app:iconGravity="textStart"
+        app:iconPadding="8dp"
+        app:iconTint="@color/black"
+        android:text="@string/search"
+        android:textColor="@color/black"
+        app:cornerRadius="16dp"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/white"
+        android:layout_weight="1"
+        android:text="@string/mediteka"
+        android:textColor="@color/black"
+        app:icon="@drawable/media_light_mode"
+        app:iconGravity="textStart"
+        app:iconPadding="8dp"
+        app:iconTint="@color/black"
+        app:cornerRadius="16dp"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/white"
+        android:layout_weight="1"
+        android:text="@string/settings"
+        android:textColor="@color/black"
+        app:icon="@drawable/gear_light_mode"
+        app:iconGravity="textStart"
+        app:iconPadding="8dp"
+        app:iconTint="@color/black"
+        app:cornerRadius="16dp"/>
+
+<!--
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -67,5 +121,5 @@
             android:backgroundTint="#ffffff"
             android:text="Да"
             android:textColor="#1A1B22"/>
-    </LinearLayout>
+    </LinearLayout> -->
 </LinearLayout>
