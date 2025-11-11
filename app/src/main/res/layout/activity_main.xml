@@ -11,6 +11,7 @@
         android:layout_height="wrap_content">
         <!--android:padding="20dp">-->
         <TextView
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="start"
@@ -20,6 +21,7 @@
     </LinearLayout>
 
     <Button
+        android:id="@+id/search_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
@@ -34,6 +36,7 @@
         app:cornerRadius="16dp"/>
 
     <Button
+        android:id="@+id/media_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/white"
@@ -47,6 +50,7 @@
         app:cornerRadius="16dp"/>
 
     <Button
+        android:id="@+id/settings_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/white"
