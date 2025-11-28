@@ -1,2 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <dimen name="settingsHeight">61dp</dimen>
+    <dimen name="cornerRadius">16dp</dimen>
+    <dimen name="iconPadding">8dp</dimen>
+    <dimen name="marginPadding">20dp</dimen>
+
+</resources>
