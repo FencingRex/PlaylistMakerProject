@@ -32,20 +32,20 @@ class MainActivity : AppCompatActivity() {
 
         searchBtn.setOnClickListener {
             val searchIntent = Intent(this, SearchActivity::class.java)
-        startActivity(searchIntent)
+            startActivity(searchIntent)
         }
-/*
-        val mediaClickListener: View.OnClickListener = object : View.OnClickListener {
-            override fun onClick(v: View?){
-                Toast.makeText(this@MainActivity,"Button Media clicked", Toast.LENGTH_LONG).show()
-            }
-        }
+        /*
+                val mediaClickListener: View.OnClickListener = object : View.OnClickListener {
+                    override fun onClick(v: View?){
+                        Toast.makeText(this@MainActivity,"Button Media clicked", Toast.LENGTH_LONG).show()
+                    }
+                }
 
-        mediaBtn.setOnClickListener(mediaClickListener)
+                mediaBtn.setOnClickListener(mediaClickListener)
 
-        searchBtn.setOnClickListener {
-            Toast.makeText(this@MainActivity, "Button search tapped",Toast.LENGTH_LONG).show()
-        }
-*/
+                searchBtn.setOnClickListener {
+                    Toast.makeText(this@MainActivity, "Button search tapped",Toast.LENGTH_LONG).show()
+                }
+        */
     }
 }
