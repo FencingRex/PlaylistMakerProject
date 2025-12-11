@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:background="@color/yp_blue"
-    android:padding="20dp">
+    android:padding="@dimen/padding">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <!--android:padding="20dp">-->
         <TextView
-
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="start"
             android:text="@string/app_name"
             android:textColor="@color/white"
-            android:textSize="20sp"/>
+            android:textSize="22sp"/>
     </LinearLayout>
 
     <Button
@@ -29,9 +29,11 @@
         android:backgroundTint="@color/white"
         app:icon="@drawable/search_light_mode"
         app:iconGravity="textStart"
+        android:textSize="22sp"
         app:iconPadding="@dimen/iconPadding"
         app:iconTint="@color/black"
         android:text="@string/search"
+        android:textAllCaps="false"
         android:textColor="@color/black"
         app:cornerRadius="@dimen/cornerRadius"/>
 
@@ -42,6 +44,8 @@
         android:backgroundTint="@color/white"
         android:layout_weight="1"
         android:text="@string/mediteka"
+        android:textSize="22sp"
+        android:textAllCaps="false"
         android:textColor="@color/black"
         app:icon="@drawable/media_light_mode"
         app:iconGravity="textStart"
@@ -56,6 +60,8 @@
         android:backgroundTint="@color/white"
         android:layout_weight="1"
         android:text="@string/settings"
+        android:textSize="22sp"
+        android:textAllCaps="false"
         android:textColor="@color/black"
         app:icon="@drawable/gear_light_mode"
         app:iconGravity="textStart"

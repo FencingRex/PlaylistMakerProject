@@ -4,5 +4,6 @@
     <dimen name="cornerRadius">16dp</dimen>
     <dimen name="iconPadding">8dp</dimen>
     <dimen name="marginPadding">20dp</dimen>
-
+    <dimen name="padding">16dp</dimen>
+    <dimen name="minHeight">61dp</dimen>
 </resources>
