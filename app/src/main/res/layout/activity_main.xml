@@ -8,17 +8,20 @@
     android:background="@color/yp_blue"
     android:padding="@dimen/padding">
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="32dp"
+            android:paddingHorizontal="12dp"
+            android:layout_marginTop="10dp"
             android:gravity="start"
             android:text="@string/app_name"
             android:textColor="@color/white"
             android:textSize="22sp"/>
-    </LinearLayout>
+    </FrameLayout>
 
     <Button
         android:id="@+id/search_btn"
@@ -27,7 +30,7 @@
         android:layout_marginTop="20dp"
         android:layout_weight="1"
         android:backgroundTint="@color/white"
-        app:icon="@drawable/search_light_mode"
+        app:icon="@drawable/ic_search_24"
         app:iconGravity="textStart"
         android:textSize="22sp"
         app:iconPadding="@dimen/iconPadding"
@@ -37,17 +40,17 @@
         android:textColor="@color/black"
         app:cornerRadius="@dimen/cornerRadius"/>
 
-    <Button
+<Button
         android:id="@+id/media_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/white"
         android:layout_weight="1"
-        android:text="@string/mediteka"
+        android:text="@string/mediateka"
         android:textSize="22sp"
         android:textAllCaps="false"
         android:textColor="@color/black"
-        app:icon="@drawable/media_light_mode"
+        app:icon="@drawable/ic_media_24"
         app:iconGravity="textStart"
         app:iconPadding="@dimen/iconPadding"
         app:iconTint="@color/black"
@@ -63,7 +66,7 @@
         android:textSize="22sp"
         android:textAllCaps="false"
         android:textColor="@color/black"
-        app:icon="@drawable/gear_light_mode"
+        app:icon="@drawable/ic_gear_24"
         app:iconGravity="textStart"
         app:iconPadding="@dimen/iconPadding"
         app:iconTint="@color/black"

@@ -1,86 +1,158 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/settings_btn"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:orientation="vertical">
 
-    <Button
-        android:id="@+id/settings_back"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="4dp"
-        android:backgroundTint="@color/white"
-        android:layout_gravity="start"
-        android:gravity="start"
-        app:icon="@drawable/arrow_back_light_mode"
-        app:iconGravity="textStart"
-        app:iconTint="@color/black"
-        android:text="@string/settings"
-        android:textSize="22sp"
-        android:textAllCaps="false"
-        android:textColor="@color/black"/>
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/marginMin"
+        android:layout_marginBottom="@dimen/marginMin"
+        android:layout_marginStart="@dimen/marginMin"
+        android:gravity="center_vertical">
 
-    <androidx.appcompat.widget.SwitchCompat
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/settings_back"
+            android:layout_width="@dimen/buttonSize"
+            android:layout_height="@dimen/buttonSize"
+            android:layout_gravity="center_vertical"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            app:icon="@drawable/ic_arrow_back_24"
+            app:iconGravity="textStart"
+            app:iconTint="@color/black"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="@dimen/layoutWeight"
+            android:paddingBottom="@dimen/paddingTextVertical"
+            android:paddingStart="@dimen/paddingTextStart"
+            android:paddingTop="@dimen/paddingTextTop"
+            android:text="@string/settings"
+            android:textAllCaps="false"
+            android:textColor="@color/black"
+            android:textSize="@dimen/textSizeTitle"
+            android:textStyle="bold"
+            tools:ignore="RtlSymmetry"/>
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:minHeight="@dimen/minHeight"
-        android:text="@string/darkTheme"
-        android:textSize="16sp"
-        android:gravity="start"
-        android:paddingHorizontal="15dp"
-        android:trackTint="@color/teal_track"
-        android:thumbTint="@color/teal_knob"/>
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/paddingHorizontal"
+        android:paddingEnd="@dimen/paddingHorizontal"
+        android:layout_marginTop="20dp">
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/settingsHeight"
-        android:minHeight="@dimen/minHeight"
-        android:backgroundTint="@color/white"
-        android:layout_gravity="start"
-        android:text="@string/shareApp"
-        android:textSize="16sp"
-        android:textAllCaps="false"
-        android:gravity="start"
-        android:padding="16dp"
-        android:textColor="@color/black"
-        app:icon="@drawable/share_light_mode"
-        android:paddingHorizontal="16dp"
-        app:iconGravity="end"
-        app:iconTint="@color/yp_text_gray"/>
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/settingsHeight"
-        android:minHeight="@dimen/minHeight"
-        android:backgroundTint="@color/white"
-        android:text="@string/support"
-        android:textSize="16sp"
-        android:layout_gravity="start"
-        android:textAllCaps="false"
-        android:gravity="start"
-        android:textColor="@color/black"
-        android:paddingHorizontal="14dp"
-        app:icon="@drawable/support_light_mode"
-        app:iconGravity="end"
-        app:iconTint="@color/yp_text_gray"/>
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/settingsHeight"
-        android:minHeight="@dimen/minHeight"
-        android:backgroundTint="@color/white"
-        android:layout_gravity="start"
-        android:gravity="start"
-        android:text="@string/userAgreement"
-        android:textSize="16sp"
-        android:textAllCaps="false"
-        android:textColor="@color/black"
-        android:paddingHorizontal="20dp"
-        app:icon="@drawable/arrow_forward"
-        app:iconGravity="end"
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="@dimen/layoutWeight"
+            android:text="@string/darkTheme"
+            android:textSize="@dimen/textSizeBody"
+            android:textColor="@color/black"
+            android:textAllCaps="false" />
 
-        app:iconTint="@color/yp_text_gray"/>
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:layout_marginStart="0dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/share_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="?selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_marginTop="@dimen/paddingVerticalItem"
+        android:paddingStart="@dimen/paddingHorizontal"
+        android:paddingEnd="@dimen/paddingHorizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="@dimen/layoutWeight"
+            android:text="@string/shareApp"
+            android:textSize="@dimen/textSizeBody"
+            android:textColor="@color/black"
+            android:textAllCaps="false" />
+
+        <com.google.android.material.button.MaterialButton
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="@dimen/layoutWeightSmall"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            app:icon="@drawable/ic_share_24"
+            app:iconTint="@color/yp_text_gray"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="?selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_marginTop="@dimen/paddingVerticalItem"
+        android:paddingStart="@dimen/paddingHorizontal"
+        android:paddingEnd="@dimen/paddingHorizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="@dimen/layoutWeight"
+            android:text="@string/support"
+            android:textSize="@dimen/textSizeBody"
+            android:textColor="@color/black"
+            android:textAllCaps="false" />
+
+        <com.google.android.material.button.MaterialButton
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="@dimen/layoutWeightSmall"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            app:icon="@drawable/ic_support_24"
+            app:iconTint="@color/yp_text_gray"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="?selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_marginTop="@dimen/paddingVerticalItem"
+        android:paddingStart="@dimen/paddingHorizontal"
+        android:paddingEnd="@dimen/paddingHorizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="@dimen/layoutWeight"
+            android:text="@string/userAgreement"
+            android:textSize="@dimen/textSizeBody"
+            android:textColor="@color/black"
+            android:textAllCaps="false" />
+
+        <com.google.android.material.button.MaterialButton
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="@dimen/layoutWeightSmall"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            app:icon="@drawable/ic_arrow_forward_24"
+            app:iconTint="@color/yp_text_gray"/>
+    </LinearLayout>
+
 
 </LinearLayout>
