@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="marginMin">4dp</dimen>
+    <dimen name="marginPadding">20dp</dimen>
+    <dimen name="marginTopSmall">14dp</dimen>
+    <dimen name="marginStartMedium">16dp</dimen>
+    <dimen name="marginLarge">40dp</dimen>
+    <dimen name="marginMedium">16dp</dimen>
+    <dimen name="marginEndMedium">16dp</dimen>
+
+    <dimen name="iconPadding">8dp</dimen>
+    <dimen name="padding">16dp</dimen>
+    <dimen name="paddingVerticalItem">21dp</dimen>
+    <dimen name="paddingTextVertical">12dp</dimen>
+    <dimen name="paddingTextStart">12dp</dimen>
+    <dimen name="paddingTextTop">10dp</dimen>
+    <dimen name="paddingHorizontal">16dp</dimen>
+
+    <dimen name="cornerRadius">16dp</dimen>
+
+    <dimen name="minHeight">61dp</dimen>
+
+    <dimen name="textSizeLarge">22sp</dimen>
+    <dimen name="textSizeTitle">22sp</dimen>
+    <dimen name="textSizeBody">16sp</dimen>
+
+    <dimen name="layoutWeight">1</dimen>
+    <dimen name="layoutWeightSmall">0.1</dimen>
+    <dimen name="buttonSize">48dp</dimen>
+
+</resources>
