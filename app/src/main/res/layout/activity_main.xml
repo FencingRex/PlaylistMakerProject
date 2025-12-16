@@ -24,51 +24,30 @@
     </FrameLayout>
 
     <Button
-        android:id="@+id/search_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_weight="1"
-        android:backgroundTint="@color/white"
+        android:id="@+id/btn_search"
+        style="@style/mainMenuButtons"
         app:icon="@drawable/ic_search_24"
-        app:iconGravity="textStart"
-        android:textSize="22sp"
-        app:iconPadding="@dimen/iconPadding"
-        app:iconTint="@color/black"
         android:text="@string/search"
-        android:textAllCaps="false"
-        android:textColor="@color/black"
-        app:cornerRadius="@dimen/cornerRadius"/>
-
-<Button
-        android:id="@+id/media_btn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/white"
-        android:layout_weight="1"
-        android:text="@string/mediateka"
-        android:textSize="22sp"
-        android:textAllCaps="false"
-        android:textColor="@color/black"
-        app:icon="@drawable/ic_media_24"
-        app:iconGravity="textStart"
-        app:iconPadding="@dimen/iconPadding"
-        app:iconTint="@color/black"
-        app:cornerRadius="@dimen/cornerRadius"/>
+        app:iconPadding="@dimen/iconPadding"/>
 
     <Button
-        android:id="@+id/settings_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/white"
-        android:layout_weight="1"
-        android:text="@string/settings"
-        android:textSize="22sp"
-        android:textAllCaps="false"
-        android:textColor="@color/black"
+        android:id="@+id/btn_media"
+        style="@style/mainMenuButtons"
+        app:icon="@drawable/ic_media_24"
+        android:text="@string/mediateka"
+        app:iconPadding="@dimen/iconPadding"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_settings"
         app:icon="@drawable/ic_gear_24"
-        app:iconGravity="textStart"
-        app:iconPadding="@dimen/iconPadding"
-        app:iconTint="@color/black"
-        app:cornerRadius="@dimen/cornerRadius"/>
+        style="@style/mainMenuButtons"
+        android:text="@string/settings"
+        app:iconPadding="@dimen/iconPadding"/>
+
 </LinearLayout>
