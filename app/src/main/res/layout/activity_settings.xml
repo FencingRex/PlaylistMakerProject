@@ -64,7 +64,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/share_btn"
+        android:id="@+id/shareBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/settingsMenu">
@@ -86,6 +86,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/supportBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/settingsMenu">
@@ -108,6 +109,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/userAgreemBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/settingsMenu">

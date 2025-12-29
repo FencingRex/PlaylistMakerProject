@@ -7,4 +7,10 @@
     <string name="support">Написать в поддержку</string>
     <string name="userAgreement">Пользовательское соглашение</string>
     <string name="mediateka">Медиатека</string>
+    <string name="shareMsg">https://practicum.yandex.ru/android-developer/</string>
+    <string name="supportMailTo">iva@scoring.ru</string>
+    <string name="supportMailSubject">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
+    <string name="supportMailBody">Спасибо разработчикам и разработчицам за крутое приложение!</string>
+    <string name="userAgreemLink">https://yandex.ru/legal/practicum_offer/ru/</string>
+    <string name="chooserMsg">Выберите приложение</string>
 </resources>
