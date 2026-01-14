@@ -14,4 +14,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="yp_text_gray">#AEAFB4</color>
     <color name="yp_blue_light">#9FBBF3</color>
+    <color name="yp_light_gray">#E6E8EB</color>
 </resources>
