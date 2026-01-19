@@ -3,7 +3,6 @@ package com.practicum.project.playlistmaker
 import android.os.Bundle
 import android.text.Editable
 import android.content.Context
-import android.os.PersistableBundle
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
@@ -16,8 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 
 
 class SearchActivity : AppCompatActivity() {
-
-    private lateinit var editText: EditText
+    private lateinit var searchRequest: EditText
     private var searchQuery: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,13 +23,16 @@ class SearchActivity : AppCompatActivity() {
         setContentView(R.layout.activity_search)
 
         val searchBack = findViewById<Button>(R.id.searchBack)
-        val searchRequest = findViewById<EditText>(R.id.searchInputText)
+        searchRequest = findViewById<EditText>(R.id.searchInputText)
         val clearBtn = findViewById<ImageView>(R.id.clearIcon)
 
         searchBack.setOnClickListener { finish() }
 
         clearBtn.setOnClickListener {
             searchRequest.setText("")
+            val inputMethodManager =
+                getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+            inputMethodManager?.hideSoftInputFromWindow(clearBtn.windowToken, 0)
         }
 
         val simpleTextWatcher = object : TextWatcher{
@@ -57,12 +58,12 @@ class SearchActivity : AppCompatActivity() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString("savedSearchReq",editText.toString())
+        outState.putString("savedSearchReq",searchRequest.toString())
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         searchQuery = savedInstanceState.getString("savedSearchReq","")
-        editText.setText(searchQuery)
+        searchRequest.setText(searchQuery)
     }
 }
