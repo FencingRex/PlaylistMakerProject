@@ -6,17 +6,20 @@ import android.os.Bundle
 import android.text.Layout
 import android.widget.Button
 import android.widget.LinearLayout
+import android.widget.TextView
+import android.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.appbar.MaterialToolbar
 
 class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
-        val backBtn = findViewById<Button>(R.id.settings_back)
-        val shareBtn = findViewById<LinearLayout>(R.id.shareBtn)
-        val supportBtn = findViewById<LinearLayout>(R.id.supportBtn)
-        val userAgreementBtn = findViewById<LinearLayout>(R.id.userAgreemBtn)
+        val backBtn = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
+        val shareBtn = findViewById<TextView>(R.id.shareBtn)
+        val supportBtn = findViewById<TextView>(R.id.supportBtn)
+        val userAgreementBtn = findViewById<TextView>(R.id.userAgreemBtn)
 
         backBtn.setOnClickListener { finish() }
 

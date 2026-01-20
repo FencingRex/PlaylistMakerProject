@@ -5,130 +5,62 @@
     android:id="@+id/settings_btn"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    style="@style/settingsScreen">
+    style="@style/settingsScreen"
+    tools:context=".MainActivity">
 
-    <LinearLayout
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        style="@style/CustomToolbarStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="@dimen/marginMin"
-        android:layout_marginBottom="@dimen/marginMin"
-        android:layout_marginStart="@dimen/marginMin"
-        android:gravity="center_vertical">
+        android:layout_marginBottom="16dp"
+        app:navigationIcon="@drawable/ic_arrow_back_24"
+        app:navigationIconTint="@color/yp_black"
+        app:title="@string/search">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/settings_back"
-            android:layout_width="@dimen/buttonSize"
-            android:layout_height="@dimen/buttonSize"
-            android:layout_gravity="center_vertical"
-            style="@style/settingsScreenIcon"
-            app:icon="@drawable/ic_arrow_back_24"
-            app:iconGravity="textStart"
-            />
+    </com.google.android.material.appbar.MaterialToolbar>
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="@dimen/layoutWeight"
-            android:paddingBottom="@dimen/paddingTextVertical"
-            android:paddingStart="@dimen/paddingTextStart"
-            android:paddingTop="@dimen/paddingTextTop"
-            android:text="@string/settings"
-            style = "@style/settingsMenuText"
-            android:textStyle="bold"
-            android:fontFamily="@font/ys_display_medium"
-            tools:ignore="RtlSymmetry"/>
-    </LinearLayout>
-
-    <LinearLayout
+    <com.google.android.material.switchmaterial.SwitchMaterial
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingStart="@dimen/paddingHorizontal"
-        android:paddingEnd="@dimen/paddingHorizontal"
-        android:layout_marginTop="20dp">
+        android:gravity="center_vertical"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="20dp"
+        android:text="@string/darkTheme"
+        android:textSize="16sp"
+        style="@style/switchButton"/>
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="@dimen/layoutWeight"
-            android:text="@string/darkTheme"
-            style = "@style/settingsMenuText" />
-
-        <com.google.android.material.switchmaterial.SwitchMaterial
-            android:layout_marginStart="0dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checked="true"
-            style="@style/switchButton"/>
-    </LinearLayout>
-
-    <LinearLayout
+    <com.google.android.material.textview.MaterialTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/shareBtn"
+        android:drawableEnd="@drawable/ic_share_24"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="20dp"
+        android:text="@string/shareApp"
+        android:textColor="@color/black"
+        android:textSize="16sp" />
+
+    <com.google.android.material.textview.MaterialTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/settingsMenu">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="@dimen/layoutWeight"
-            android:text="@string/shareApp"
-            style = "@style/settingsMenuText"/>
-
-        <com.google.android.material.button.MaterialButton
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="@dimen/layoutWeightSmall"
-            style="@style/settingsScreenIcon"
-            app:icon="@drawable/ic_share_24"
-            />
-    </LinearLayout>
-
-    <LinearLayout
         android:id="@+id/supportBtn"
+        android:drawableEnd="@drawable/ic_support_24"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="20dp"
+        android:text="@string/support"
+        android:textColor="@color/black"
+        android:textSize="16sp" />
+
+    <com.google.android.material.textview.MaterialTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/settingsMenu">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="@dimen/layoutWeight"
-            android:text="@string/support"
-            style = "@style/settingsMenuText"
-            />
-
-        <com.google.android.material.button.MaterialButton
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="@dimen/layoutWeightSmall"
-            style="@style/settingsScreenIcon"
-            app:icon="@drawable/ic_support_24"
-            />
-    </LinearLayout>
-
-    <LinearLayout
         android:id="@+id/userAgreemBtn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        style="@style/settingsMenu">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="@dimen/layoutWeight"
-            android:text="@string/userAgreement"
-            style = "@style/settingsMenuText"/>
-
-        <com.google.android.material.button.MaterialButton
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="@dimen/layoutWeightSmall"
-            style="@style/settingsScreenIcon"
-            app:icon="@drawable/ic_arrow_forward_24"
-           />
-    </LinearLayout>
-
+        android:drawableEnd="@drawable/ic_arrow_forward_24"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="20dp"
+        android:text="@string/userAgreement"
+        android:textColor="@color/black"
+        android:textSize="16sp" />
 
 </LinearLayout>
