@@ -38,6 +38,7 @@
         android:paddingHorizontal="16dp"
         android:paddingVertical="20dp"
         android:text="@string/shareApp"
+        android:fontFamily="@font/ys_display_regular"
         android:textColor="@color/black"
         android:textSize="16sp" />
 
@@ -49,6 +50,7 @@
         android:paddingHorizontal="16dp"
         android:paddingVertical="20dp"
         android:text="@string/support"
+        android:fontFamily="@font/ys_display_regular"
         android:textColor="@color/black"
         android:textSize="16sp" />
 
@@ -59,6 +61,7 @@
         android:drawableEnd="@drawable/ic_arrow_forward_24"
         android:paddingHorizontal="16dp"
         android:paddingVertical="20dp"
+        android:fontFamily="@font/ys_display_regular"
         android:text="@string/userAgreement"
         android:textColor="@color/black"
         android:textSize="16sp" />

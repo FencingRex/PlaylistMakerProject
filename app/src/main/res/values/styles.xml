@@ -13,6 +13,7 @@
     </style>
 
     <style name="switchButton" parent="Widget.Material3.CompoundButton.Switch">
+        <item name="fontFamily">@font/ys_display_regular</item>
         <item name="android:textColor">@color/black</item>
         <item name="thumbTint">@color/teal_knob</item>
         <item name="trackTint">@color/teal_track</item>
