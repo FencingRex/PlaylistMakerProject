@@ -17,7 +17,7 @@
     <dimen name="paddingHorizontal">16dp</dimen>
 
     <dimen name="cornerRadius">16dp</dimen>
-
+    <dimen name="layoutHeight">36dp</dimen>
     <dimen name="minHeight">61dp</dimen>
 
     <dimen name="textSizeLarge">22sp</dimen>

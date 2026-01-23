@@ -8,4 +8,5 @@
     <string name="shareApp">Share App</string>
     <string name="support">Write to support</string>
     <string name="userAgreement">User agreement</string>
+    <string name="backButton">Back</string>
 </resources>

@@ -13,7 +13,8 @@
         android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar">
         <activity
             android:name=".SearchActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".MediaActivity"
             android:exported="false" />
