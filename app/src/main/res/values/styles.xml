@@ -79,17 +79,35 @@
         <item name="android:background" type="drawable">@drawable/rounded_textview</item>
         <item name="android:padding">@dimen/iconPadding</item>
         <item name="android:singleLine">true</item>
-        <item name="android:textColor">@color/yp_text_gray</item>
+        <item name="android:textColor">@color/yp_black</item>
         <item name="android:textColorHint">@color/yp_text_gray</item>
         <item name="android:hint">@string/search</item>
         <item name="android:focusable">true</item>
         <item name="android:focusableInTouchMode">true</item>
         <item name="android:drawableStart">@drawable/ic_search_16</item>
         <item name="android:drawablePadding">@dimen/iconPadding</item>
-        <item name="android:drawableTint">@color/yp_black</item>
+        <item name="android:drawableTint">@color/yp_text_gray</item>
         <item name="android:imeOptions">actionDone</item>
         <item name="android:inputType">text</item>
         <item name="android:maxLines">1</item>
+    </style>
+    <style name="searchResultIv">
+        <item name="tint">@color/yp_text_gray</item>
+    </style>
+    <style name="searchResultText">
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">16sp</item>
+
+    </style>
+    <style name="searchResultTextInfo">
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textColor">@color/yp_text_gray</item>
+        <item name="android:textSize">11sp</item>
     </style>
 </resources>
 <!--<item name="android:layout_width">match_parent</item>

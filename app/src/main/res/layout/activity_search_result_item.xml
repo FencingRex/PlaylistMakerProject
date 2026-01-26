@@ -38,12 +38,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
-                android:fontFamily="@font/ys_display_regular"
-                android:maxLines="1"
-                android:singleLine="true"
-                android:textColor="?attr/colorControlNormal"
-                android:textSize="16sp"
-                tools:text="LooooooooooooooooooooooooooooooooooooongSong" />
+                style="@style/searchResultText"
+                tools:text="Some song name" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -55,11 +51,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
-                    android:fontFamily="@font/ys_display_regular"
-                    android:maxLines="1"
-                    android:singleLine="true"
-                    android:textColor="?attr/colorControlNormal"
-                    android:textSize="11sp"
+                    style="@style/searchResultTextInfo"
                     app:layout_constrainedWidth="true"
                     app:layout_constraintEnd_toStartOf="@id/dot"
                     app:layout_constraintStart_toStartOf="parent"
@@ -74,17 +66,14 @@
                     android:layout_marginEnd="4dp"
                     android:src="@drawable/ic_dot_13"
                     app:layout_constraintStart_toEndOf="@id/artistName"
-                    app:tint="?attr/colorControlNormal" />
+                    style="@style/searchResultIv"/>
 
                 <TextView
                     android:id="@+id/trackTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
-                    android:fontFamily="@font/ys_display_regular"
-                    android:maxLines="1"
-                    android:textColor="?attr/colorControlNormal"
-                    android:textSize="11sp"
+                    style="@style/searchResultTextInfo"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/dot"
                     tools:text="5:01" />
@@ -96,8 +85,8 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginHorizontal="12dp"
-            android:src="@drawable/ic_arrow_forward_24"
-            app:tint="?attr/colorControlNormal" />
+            android:src="@drawable/ic_forward_search_24"
+            style="@style/searchResultIv" />
 
     </LinearLayout>
 
