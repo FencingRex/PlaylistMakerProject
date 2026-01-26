@@ -8,6 +8,7 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.Adapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
@@ -18,13 +19,21 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import kotlin.toString
-
+import com.practicum.project.playlistmaker.Mock
+import com.practicum.project.playlistmaker.SearchAdapter
 
 class SearchActivity : AppCompatActivity() {
     private lateinit var searchRequest: EditText
     private lateinit var clearBtn: ImageView
     private var searchQuery: String = ""
+
+    //private lateinit var recyclerView: RecyclerView
+    private lateinit var adapter: SearchAdapter
+
+    private val mockData = Mock.getMockTracks()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,7 +57,7 @@ class SearchActivity : AppCompatActivity() {
                     getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
                 inputMethodManager?.hideSoftInputFromWindow(clearBtn.windowToken, 0)
             }
-
+        setRecyclerView()
             val simpleTextWatcher = object : TextWatcher {
                 override fun beforeTextChanged(
                     s: CharSequence?,
@@ -70,6 +79,7 @@ class SearchActivity : AppCompatActivity() {
             }
             searchRequest.addTextChangedListener(simpleTextWatcher)
         }
+
     private fun clearButtonVisibility(s: CharSequence?): Int {
         return if (s.isNullOrEmpty()) {
             View.GONE
@@ -87,5 +97,13 @@ class SearchActivity : AppCompatActivity() {
         super.onRestoreInstanceState(savedInstanceState)
         searchQuery = savedInstanceState.getString("savedSearchReq", "")
         searchRequest.setText(searchQuery)
+    }
+    private fun setRecyclerView(){
+        val recyclerView = findViewById<RecyclerView>(R.id.searchResults)
+
+        adapter = SearchAdapter(mockData)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.adapter = adapter
+        recyclerView.setHasFixedSize(true)
     }
 }
