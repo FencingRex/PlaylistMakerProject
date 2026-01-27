@@ -15,7 +15,6 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         app:navigationIcon="@drawable/ic_arrow_back_24"
-        app:navigationIconTint="@color/yp_black"
         app:title="@string/search">
 
     </com.google.android.material.appbar.MaterialToolbar>
