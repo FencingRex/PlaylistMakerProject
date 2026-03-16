@@ -28,5 +28,7 @@
     <dimen name="layoutWeightSmall">0.1</dimen>
     <dimen name="buttonSize">48dp</dimen>
     <dimen name="errPlaceholderPadding">102dp</dimen>
-
+    <dimen name="marginBottom">24dp</dimen>
+    <dimen name="textFontWeight">400</dimen>
+    <dimen name="placeholderTextSize">19sp</dimen>
 </resources>

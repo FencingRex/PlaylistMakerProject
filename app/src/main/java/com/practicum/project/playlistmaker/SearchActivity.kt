@@ -42,8 +42,11 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var refreshBtn: Button
     private var searchQuery: String = ""
     private lateinit var recyclerView: RecyclerView
-    private lateinit var placeholderErrorMessage: TextView
+    private lateinit var placeholderErrorText: TextView
     private lateinit var placeholderErrorImage: ImageView
+    private lateinit var placeholderConnectionText: TextView
+    private lateinit var placeholderConnectionText_2: TextView
+    private lateinit var placeholderConnectionImage: ImageView
     private lateinit var placeholderLayoutError: LinearLayout
     //private lateinit var refreshButton: Button
 
@@ -74,10 +77,13 @@ class SearchActivity : AppCompatActivity() {
         clearBtn = findViewById(R.id.clearIcon)
         refreshBtn = findViewById(R.id.refreshButton)
 
-        placeholderErrorImage = findViewById(R.id.placeholderConnectionImage)
-        placeholderErrorMessage = findViewById(R.id.placeholderConnectionText)
-        placeholderLayoutError = findViewById(R.id.layoutErrorPlaceholder)
 
+        placeholderLayoutError = findViewById(R.id.layoutErrorPlaceholder)
+        placeholderErrorImage = findViewById(R.id.placeholderNotFoundImage)
+        placeholderErrorText = findViewById(R.id.placeholderNotFoundText)
+        placeholderConnectionImage = findViewById(R.id.placeholderConnectionImage)
+        placeholderConnectionText = findViewById(R.id.placeholderConnectionText)
+        placeholderConnectionText_2 = findViewById(R.id.placeholderDownloadText)
         searchBack.setOnClickListener { finish() }
 
         clearBtn.setOnClickListener {
@@ -185,15 +191,23 @@ class SearchActivity : AppCompatActivity() {
                 Log.d("show result","nothing")
                 placeholderLayoutError.visibility = View.VISIBLE
                 recyclerView.visibility = View.GONE
+                refreshBtn.visibility = View.GONE
+                placeholderConnectionImage.visibility = View.GONE
+                placeholderConnectionText.visibility = View.GONE
+                placeholderConnectionText_2.visibility = View.GONE
+
                 placeholderErrorImage.visibility = View.VISIBLE
-                placeholderErrorMessage.visibility =View.VISIBLE
+                placeholderErrorText.visibility =View.VISIBLE
             }
             "connection_error" ->{
                 Log.d("show result","connection error")
                 recyclerView.visibility = View.GONE
+                placeholderErrorImage.visibility = View.GONE
+                placeholderErrorText.visibility =View.GONE
                 placeholderLayoutError.visibility = View.VISIBLE
-                placeholderErrorImage.visibility = View.VISIBLE
-                placeholderErrorMessage.visibility = View.VISIBLE
+                placeholderConnectionImage.visibility = View.VISIBLE
+                placeholderConnectionText.visibility = View.VISIBLE
+                placeholderConnectionText_2.visibility = View.VISIBLE
                 refreshBtn.visibility = View.VISIBLE
             }
             else -> {
