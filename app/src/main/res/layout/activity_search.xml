@@ -93,15 +93,9 @@
             android:id="@+id/refreshButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textAllCaps="false"
-            android:fontFamily="@font/ys_display_medium"
-            android:background="@color/yp_white"
-            android:text="@string/refresh"
-            android:textColor="@color/yp_black"
-            android:backgroundTint="?attr/colorPrimaryVariant"
+            style="@style/refreshButton"
             android:textFontWeight="500"
-            android:textSize="14sp" />
+            />
 
     </LinearLayout>
     <androidx.recyclerview.widget.RecyclerView

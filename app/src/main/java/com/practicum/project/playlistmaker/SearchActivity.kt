@@ -85,6 +85,8 @@ class SearchActivity : AppCompatActivity() {
 
         clearBtn.setOnClickListener {
             searchRequest.setText("")
+            trackList.clear()
+            adapter.notifyDataSetChanged()
             val inputMethodManager =
                 getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
             inputMethodManager?.hideSoftInputFromWindow(clearBtn.windowToken, 0)
@@ -125,6 +127,9 @@ class SearchActivity : AppCompatActivity() {
                 }
                 false
             }
+        refreshBtn.setOnClickListener {
+            searchTrack(searchRequest.text.toString())
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -173,8 +178,9 @@ class SearchActivity : AppCompatActivity() {
 
     private fun errorHandle(status: String){
         recyclerView.visibility = View.GONE
-        //placeholderImage.visibility = View.VISIBLE
-        //placeholderMessage.visibility = View.VISIBLE
+
+        trackList.clear()
+        adapter.notifyDataSetChanged()
 
         when(status){
             "not_found" ->{
