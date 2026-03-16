@@ -12,7 +12,6 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Adapter
 import android.widget.Button
 import android.widget.EditText
-import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -26,7 +25,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import kotlin.toString
-import com.practicum.project.playlistmaker.Mock
 import com.practicum.project.playlistmaker.SearchAdapter
 import com.practicum.project.playlistmaker.iTunesAPI.SearchAPI
 import com.practicum.project.playlistmaker.iTunesAPI.SearchResponse
@@ -45,13 +43,12 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var placeholderErrorText: TextView
     private lateinit var placeholderErrorImage: ImageView
     private lateinit var placeholderConnectionText: TextView
-    private lateinit var placeholderConnectionText_2: TextView
+    private lateinit var placeholderDownloadText: TextView
     private lateinit var placeholderConnectionImage: ImageView
     private lateinit var placeholderLayoutError: LinearLayout
-    //private lateinit var refreshButton: Button
+
 
     private lateinit var adapter: SearchAdapter
-   // private val mockData = Mock.getMockTracks()
     private val iTunesBaseUrl: String = "https://itunes.apple.com" //R.string.baseUrl.toString()
 
     private val retrofit = Retrofit.Builder()
@@ -83,7 +80,7 @@ class SearchActivity : AppCompatActivity() {
         placeholderErrorText = findViewById(R.id.placeholderNotFoundText)
         placeholderConnectionImage = findViewById(R.id.placeholderConnectionImage)
         placeholderConnectionText = findViewById(R.id.placeholderConnectionText)
-        placeholderConnectionText_2 = findViewById(R.id.placeholderDownloadText)
+        placeholderDownloadText = findViewById(R.id.placeholderDownloadText)
         searchBack.setOnClickListener { finish() }
 
         clearBtn.setOnClickListener {
@@ -142,7 +139,7 @@ class SearchActivity : AppCompatActivity() {
     }
     private fun setRecyclerView(){
         Log.d("recyclerView","run recyclerView")
-        recyclerView = findViewById<RecyclerView>(R.id.searchResults)
+        recyclerView = findViewById(R.id.searchResults)
 
         adapter = SearchAdapter(trackList)
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -151,24 +148,17 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun searchTrack(searchValue: String){
-        Log.d("searchValue","$searchValue")
         iTunesSearch.search(searchValue).enqueue(object : Callback<SearchResponse> {
             override fun onResponse (call: Call<SearchResponse>, response: Response<SearchResponse>) {
                 if (response.code() == 200) {
-                    Log.d("resp_code","${response.code().toString()}")
                     if(response.body()?.resultCount!! > 0){
-                        //placeholder hide
-                        Log.d("resp_result_qty","${response.body()?.resultCount}")
                         trackList.addAll(response.body()?.results!!)
                         errorHandle("")
-                        Log.d("result","${trackList.firstOrNull()}")
                     } else {
-                        Log.d("resp_result_qty_0","${response.body()?.resultCount}")
-                        errorHandle("not_found") //getString(R.string.errNotFound))
+                        errorHandle("not_found")
                     }
                 } else {
-                    Log.d("resp_code_not_200","${response.code().toString()}")
-                    errorHandle("connection_error")//getString(R.string.errDownload))
+                    errorHandle("connection_error")
                 }
             }
 
@@ -176,7 +166,7 @@ class SearchActivity : AppCompatActivity() {
                 call: Call<SearchResponse?>,
                 t: Throwable
             ) {
-                errorHandle("connection_error")//getString(R.string.errConnection)) //TODO("Not yet implemented")
+                errorHandle("connection_error")
             }
         })
     }
@@ -194,7 +184,7 @@ class SearchActivity : AppCompatActivity() {
                 refreshBtn.visibility = View.GONE
                 placeholderConnectionImage.visibility = View.GONE
                 placeholderConnectionText.visibility = View.GONE
-                placeholderConnectionText_2.visibility = View.GONE
+                placeholderDownloadText.visibility = View.GONE
 
                 placeholderErrorImage.visibility = View.VISIBLE
                 placeholderErrorText.visibility =View.VISIBLE
@@ -207,7 +197,7 @@ class SearchActivity : AppCompatActivity() {
                 placeholderLayoutError.visibility = View.VISIBLE
                 placeholderConnectionImage.visibility = View.VISIBLE
                 placeholderConnectionText.visibility = View.VISIBLE
-                placeholderConnectionText_2.visibility = View.VISIBLE
+                placeholderDownloadText.visibility = View.VISIBLE
                 refreshBtn.visibility = View.VISIBLE
             }
             else -> {
