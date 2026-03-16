@@ -7,12 +7,15 @@ import android.content.Context
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Adapter
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toolbar
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -21,19 +24,40 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
 import kotlin.toString
 import com.practicum.project.playlistmaker.Mock
 import com.practicum.project.playlistmaker.SearchAdapter
+import com.practicum.project.playlistmaker.iTunesAPI.SearchAPI
+import com.practicum.project.playlistmaker.iTunesAPI.SearchResponse
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class SearchActivity : AppCompatActivity() {
     private lateinit var searchRequest: EditText
     private lateinit var clearBtn: ImageView
+    private lateinit var refreshBtn: Button
     private var searchQuery: String = ""
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var placeholderErrorMessage: TextView
+    private lateinit var placeholderErrorImage: ImageView
+    private lateinit var placeholderLayoutError: LinearLayout
+    //private lateinit var refreshButton: Button
 
-    //private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: SearchAdapter
+   // private val mockData = Mock.getMockTracks()
+    private val iTunesBaseUrl: String = "https://itunes.apple.com" //R.string.baseUrl.toString()
 
-    private val mockData = Mock.getMockTracks()
+    private val retrofit = Retrofit.Builder()
+        .baseUrl(iTunesBaseUrl)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+
+    private val iTunesSearch = retrofit.create(SearchAPI::class.java)
+    private val trackList = ArrayList<Track>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,46 +70,58 @@ class SearchActivity : AppCompatActivity() {
         }
         val searchBack = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
 
-            searchRequest = findViewById(R.id.searchInputText)
-            clearBtn = findViewById(R.id.clearIcon)
+        searchRequest = findViewById(R.id.searchInputText)
+        clearBtn = findViewById(R.id.clearIcon)
+        refreshBtn = findViewById(R.id.refreshButton)
 
-            searchBack.setOnClickListener { finish() }
+        placeholderErrorImage = findViewById(R.id.placeholderConnectionImage)
+        placeholderErrorMessage = findViewById(R.id.placeholderConnectionText)
+        placeholderLayoutError = findViewById(R.id.layoutErrorPlaceholder)
 
-            clearBtn.setOnClickListener {
-                searchRequest.setText("")
-                val inputMethodManager =
-                    getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-                inputMethodManager?.hideSoftInputFromWindow(clearBtn.windowToken, 0)
-            }
+        searchBack.setOnClickListener { finish() }
+
+        clearBtn.setOnClickListener {
+            searchRequest.setText("")
+            val inputMethodManager =
+                getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+            inputMethodManager?.hideSoftInputFromWindow(clearBtn.windowToken, 0)
+            trackList.clear()
+        }
+
         setRecyclerView()
-            val simpleTextWatcher = object : TextWatcher {
-                override fun beforeTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    count: Int,
-                    after: Int
-                ) {
-                    //empty
-                }
 
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    //clearBtn.visibility = // clearButtonVisibility(s)
-                    clearBtn.isVisible = !s.isNullOrEmpty()
-                }
+        val simpleTextWatcher = object : TextWatcher {
+            override fun beforeTextChanged(
+                s: CharSequence?,
+                start: Int,
+                count: Int,
+                after: Int
+            ) {
+                //empty
+            }
 
-                override fun afterTextChanged(s: Editable?) {
-                    searchQuery = s.toString()
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                clearBtn.isVisible = !s.isNullOrEmpty()
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                searchQuery = s.toString()
+                if (searchRequest.text.isEmpty()){
+                    trackList.clear()
                 }
             }
-            searchRequest.addTextChangedListener(simpleTextWatcher)
         }
+        searchRequest.addTextChangedListener(simpleTextWatcher)
 
-    private fun clearButtonVisibility(s: CharSequence?): Int {
-        return if (s.isNullOrEmpty()) {
-            View.GONE
-        } else {
-            View.VISIBLE
-        }
+        searchRequest.setOnEditorActionListener { _, actionId, _ ->
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    if (searchRequest.text.isNotEmpty()){
+                        searchTrack(searchRequest.text.toString())
+                        setRecyclerView()
+                    }
+                }
+                false
+            }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -99,11 +135,74 @@ class SearchActivity : AppCompatActivity() {
         searchRequest.setText(searchQuery)
     }
     private fun setRecyclerView(){
-        val recyclerView = findViewById<RecyclerView>(R.id.searchResults)
+        Log.d("recyclerView","run recyclerView")
+        recyclerView = findViewById<RecyclerView>(R.id.searchResults)
 
-        adapter = SearchAdapter(mockData)
+        adapter = SearchAdapter(trackList)
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
         recyclerView.setHasFixedSize(true)
+    }
+
+    private fun searchTrack(searchValue: String){
+        Log.d("searchValue","$searchValue")
+        iTunesSearch.search(searchValue).enqueue(object : Callback<SearchResponse> {
+            override fun onResponse (call: Call<SearchResponse>, response: Response<SearchResponse>) {
+                if (response.code() == 200) {
+                    Log.d("resp_code","${response.code().toString()}")
+                    if(response.body()?.resultCount!! > 0){
+                        //placeholder hide
+                        Log.d("resp_result_qty","${response.body()?.resultCount}")
+                        trackList.addAll(response.body()?.results!!)
+                        errorHandle("")
+                        Log.d("result","${trackList.firstOrNull()}")
+                    } else {
+                        Log.d("resp_result_qty_0","${response.body()?.resultCount}")
+                        errorHandle("not_found") //getString(R.string.errNotFound))
+                    }
+                } else {
+                    Log.d("resp_code_not_200","${response.code().toString()}")
+                    errorHandle("connection_error")//getString(R.string.errDownload))
+                }
+            }
+
+            override fun onFailure(
+                call: Call<SearchResponse?>,
+                t: Throwable
+            ) {
+                errorHandle("connection_error")//getString(R.string.errConnection)) //TODO("Not yet implemented")
+            }
+        })
+    }
+
+    private fun errorHandle(status: String){
+        recyclerView.visibility = View.GONE
+        //placeholderImage.visibility = View.VISIBLE
+        //placeholderMessage.visibility = View.VISIBLE
+
+        when(status){
+            "not_found" ->{
+                Log.d("show result","nothing")
+                placeholderLayoutError.visibility = View.VISIBLE
+                recyclerView.visibility = View.GONE
+                placeholderErrorImage.visibility = View.VISIBLE
+                placeholderErrorMessage.visibility =View.VISIBLE
+            }
+            "connection_error" ->{
+                Log.d("show result","connection error")
+                recyclerView.visibility = View.GONE
+                placeholderLayoutError.visibility = View.VISIBLE
+                placeholderErrorImage.visibility = View.VISIBLE
+                placeholderErrorMessage.visibility = View.VISIBLE
+                refreshBtn.visibility = View.VISIBLE
+            }
+            else -> {
+                Log.d("show result","result")
+                recyclerView.visibility = View.VISIBLE
+                placeholderLayoutError.visibility = View.GONE
+            }
+
+        }
+
     }
 }
