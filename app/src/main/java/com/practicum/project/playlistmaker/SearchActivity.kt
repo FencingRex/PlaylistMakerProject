@@ -159,6 +159,7 @@ class SearchActivity : AppCompatActivity() {
                 //if (response.code() == 200) {
                 if (response.isSuccessful) {
                     val responseValue = response.body()?.results ?: emptyList()
+                    Log.d("resp Value","$responseValue")
                     if (responseValue.isNotEmpty()){
                     //if(response.body()?.resultCount!! > 0){
                         trackList.addAll(responseValue) //response.body()?.results!!)
