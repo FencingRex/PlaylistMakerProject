@@ -111,7 +111,8 @@ class SearchActivity : AppCompatActivity() {
 
             override fun afterTextChanged(s: Editable?) {
                 searchQuery = s.toString()
-                if (searchRequest.text.isEmpty()){
+                if (s.toString().isEmpty()){
+                //if (searchRequest.text.isEmpty()){
                     trackList.clear()
                 }
             }
@@ -155,9 +156,12 @@ class SearchActivity : AppCompatActivity() {
     private fun searchTrack(searchValue: String){
         iTunesSearch.search(searchValue).enqueue(object : Callback<SearchResponse> {
             override fun onResponse (call: Call<SearchResponse>, response: Response<SearchResponse>) {
-                if (response.code() == 200) {
-                    if(response.body()?.resultCount!! > 0){
-                        trackList.addAll(response.body()?.results!!)
+                //if (response.code() == 200) {
+                if (response.isSuccessful) {
+                    val responseValue = response.body()?.results ?: emptyList()
+                    if (responseValue.isNotEmpty()){
+                    //if(response.body()?.resultCount!! > 0){
+                        trackList.addAll(responseValue) //response.body()?.results!!)
                         errorHandle("")
                     } else {
                         errorHandle("not_found")
@@ -178,9 +182,6 @@ class SearchActivity : AppCompatActivity() {
 
     private fun errorHandle(status: String){
         recyclerView.visibility = View.GONE
-
-        trackList.clear()
-        adapter.notifyDataSetChanged()
 
         when(status){
             "not_found" ->{
