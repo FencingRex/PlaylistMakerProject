@@ -7,12 +7,16 @@
     <string name="support">Написать в поддержку</string>
     <string name="userAgreement">Пользовательское соглашение</string>
     <string name="mediateka">Медиатека</string>
-    <string name="shareMsg">https://practicum.yandex.ru/android-developer/</string>
-    <string name="supportMailTo">iva@scoring.ru</string>
-    <string name="supportMailSubject">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
-    <string name="supportMailBody">Спасибо разработчикам и разработчицам за крутое приложение!</string>
-    <string name="userAgreemLink">https://yandex.ru/legal/practicum_offer/ru/</string>
+    <string name="shareMsg" translatable="false">https://practicum.yandex.ru/android-developer/</string>
+    <string name="supportMailTo" translatable="false">iva@scoring.ru</string>
+    <string name="supportMailSubject" translatable="false">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
+    <string name="supportMailBody" translatable="false">Спасибо разработчикам и разработчицам за крутое приложение!</string>
+    <string name="userAgreemLink" translatable="false">https://yandex.ru/legal/practicum_offer/ru/</string>
     <string name="chooserMsg">Выберите приложение</string>
     <string name="backButton">Назад</string>
-
+    <string name="baseUrl" translatable="false">https://itunes.apple.com</string>
+    <string name="errNotFound">Ничего не нашлось</string>
+    <string name="errConnection">Проблемы со связью</string>
+    <string name="errDownload">Загрузка не удалась. Проверьте подключение к интернету</string>
+    <string name="refresh">Обновить</string>
 </resources>

@@ -8,5 +8,10 @@
     <string name="shareApp">Share App</string>
     <string name="support">Write to support</string>
     <string name="userAgreement">User agreement</string>
+    <string name="chooserMsg">Choice app</string>
     <string name="backButton">Back</string>
+    <string name="errNotFound">Nothin not Found</string>
+    <string name="errConnection">Connection Error</string>
+    <string name="errDownload">Downloadind failed</string>
+    <string name="refresh">Refresh</string>
 </resources>

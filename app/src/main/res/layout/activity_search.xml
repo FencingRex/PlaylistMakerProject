@@ -29,7 +29,9 @@
         <EditText
             android:id="@+id/searchInputText"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/layoutHeight"
+            android:layout_height= "@dimen/layoutHeight"
+            android:imeOptions="actionDone"
+            android:singleLine="true"
             style="@style/searchDisplayText"
             />
 
@@ -37,13 +39,65 @@
             android:id="@+id/clearIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical|end"
+            android:layout_gravity="center|end"
             android:layout_marginEnd="24dp"
             android:src="@drawable/ic_clear_16"
             android:visibility="gone"
             app:tint="@color/yp_text_gray"
              />
     </FrameLayout>
+    <LinearLayout
+        android:id="@+id/layoutErrorPlaceholder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/errPlaceholderPadding"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/placeholderNotFoundImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/placeholderNotFoudStyle"/>
+
+        <TextView
+            android:id="@+id/placeholderNotFoundText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/placeholderText"
+            android:textFontWeight="400"
+            android:text="@string/errNotFound"/>
+        <ImageView
+            android:id="@+id/placeholderConnectionImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/placeholderConnectionStyle"/>
+
+        <TextView
+            android:id="@+id/placeholderConnectionText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/placeholderText"
+            android:textFontWeight="400"
+            android:text="@string/errConnection"
+            />
+        <TextView
+            android:id="@+id/placeholderDownloadText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/placeholderText"
+            android:textFontWeight="400"
+            android:text="@string/errDownload"
+            />
+        <Button
+            android:id="@+id/refreshButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/refreshButton"
+            android:textFontWeight="500"
+            />
+
+    </LinearLayout>
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
