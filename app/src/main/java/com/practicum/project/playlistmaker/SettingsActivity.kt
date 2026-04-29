@@ -3,25 +3,28 @@ package com.practicum.project.playlistmaker
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.text.Layout
-import android.widget.Button
-import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toolbar
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.switchmaterial.SwitchMaterial
 
 class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
+
         val backBtn = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
         val shareBtn = findViewById<TextView>(R.id.shareBtn)
         val supportBtn = findViewById<TextView>(R.id.supportBtn)
         val userAgreementBtn = findViewById<TextView>(R.id.userAgreemBtn)
+        val themeSwitcher = findViewById<SwitchMaterial>(R.id.themeSwitcher)
+        val application = applicationContext as App
+
+
+        themeSwitcher.isChecked = application.darkTheme
+
+        themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
+            application.switchTheme(checked)
+        }
 
         backBtn.setOnClickListener { finish() }
 

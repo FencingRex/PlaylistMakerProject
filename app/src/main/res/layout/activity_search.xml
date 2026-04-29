@@ -93,14 +93,42 @@
             android:id="@+id/refreshButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/refreshButton"
+            style="@style/searchScreenButton"
+            android:text="@string/refresh"
             android:textFontWeight="500"
             />
 
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/history"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone">
+        <TextView
+            android:id="@+id/historyHeader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/searched"
+            android:textSize="@dimen/placeholderTextSize"
+            android:textFontWeight="500"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/searchedTracks"
+            />
+        <Button
+            android:id="@+id/cleanHistory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/searchScreenButton"
+            android:text="Очистить историю"
+            android:textFontWeight="500"/>
     </LinearLayout>
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/searchResults"
         />
+
 </LinearLayout>
