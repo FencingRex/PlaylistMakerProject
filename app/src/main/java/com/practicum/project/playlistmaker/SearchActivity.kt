@@ -103,7 +103,9 @@ class SearchActivity : AppCompatActivity() {
             adapter.notifyDataSetChanged()
 
             updateSearchHistory()
+            historyLabel.visibility = View.VISIBLE
             historyLayout.visibility = View.VISIBLE
+            clearHistoryBtn.visibility = View.VISIBLE
             recyclerView.visibility = View.GONE
             placeholderLayoutError.visibility = View.GONE
 
@@ -116,9 +118,13 @@ class SearchActivity : AppCompatActivity() {
         searchRequest.setOnFocusChangeListener{ _, hasFocus ->
             if (hasFocus && searchRequest.text.isEmpty()){
                 updateSearchHistory()
+                historyLabel.visibility = View.VISIBLE
                 historyLayout.visibility = View.VISIBLE
+                clearHistoryBtn.visibility = View.VISIBLE
             } else {
+                historyLabel.visibility = View.GONE
                 historyLayout.visibility = View.GONE
+                clearHistoryBtn.visibility = View.GONE
             }
         }
         setRecyclerView()
@@ -138,7 +144,9 @@ class SearchActivity : AppCompatActivity() {
                     recyclerView.visibility = View.GONE
                     placeholderLayoutError.visibility = View.GONE
                 } else{
+                    historyLabel.visibility = View.GONE
                     historyLayout.visibility = View.GONE
+                    clearHistoryBtn.visibility = View.GONE
                 }
             }
 
@@ -245,8 +253,6 @@ class SearchActivity : AppCompatActivity() {
         }
     }
     private fun errorHandle(status: RequestState){
-        //recyclerView.visibility = View.GONE
-       // historyLayout.visibility = View.VISIBLE
         when(status){
             RequestState.Success ->{
                 recyclerView.visibility = View.VISIBLE
@@ -262,7 +268,6 @@ class SearchActivity : AppCompatActivity() {
 
                 placeholderErrorImage.visibility = View.VISIBLE
                 placeholderErrorText.visibility = View.VISIBLE
-                //historyLayout.visibility = View.GONE
             }
             RequestState.NotConnected ->{
                 recyclerView.visibility = View.GONE
@@ -273,17 +278,10 @@ class SearchActivity : AppCompatActivity() {
                 placeholderConnectionText.visibility = View.VISIBLE
                 placeholderDownloadText.visibility = View.VISIBLE
                 refreshBtn.visibility = View.VISIBLE
-                //historyLayout.visibility = View.GONE
             }
             RequestState.Empty ->{
                 updateSearchHistory()
             }
-            /*else -> {
-                recyclerView.visibility = View.VISIBLE
-                placeholderLayoutError.visibility = View.GONE
-                historyLayout.visibility = View.GONE
-            }*/
-
         }
 
     }
