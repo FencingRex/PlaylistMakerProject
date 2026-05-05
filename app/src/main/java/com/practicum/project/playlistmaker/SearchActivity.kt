@@ -75,21 +75,18 @@ class SearchActivity : AppCompatActivity() {
         searchRequest = findViewById(R.id.searchInputText)
         clearBtn = findViewById(R.id.clearIcon)
         refreshBtn = findViewById(R.id.refreshButton)
-
-
         placeholderLayoutError = findViewById(R.id.layoutErrorPlaceholder)
         placeholderErrorImage = findViewById(R.id.placeholderNotFoundImage)
         placeholderErrorText = findViewById(R.id.placeholderNotFoundText)
         placeholderConnectionImage = findViewById(R.id.placeholderConnectionImage)
         placeholderConnectionText = findViewById(R.id.placeholderConnectionText)
         placeholderDownloadText = findViewById(R.id.placeholderDownloadText)
-
         historyLayout = findViewById(R.id.history)
         historyLabel = findViewById(R.id.historyHeader)
         clearHistoryBtn = findViewById(R.id.cleanHistory)
-
         sharedPreferences = getSharedPreferences(SearchHistory.SEARCH_HISTORY_PREF, MODE_PRIVATE)
         searchHistory = SearchHistory(sharedPreferences)
+
         searchBack.setOnClickListener { finish() }
 
         clearHistoryBtn.setOnClickListener {
@@ -103,20 +100,21 @@ class SearchActivity : AppCompatActivity() {
             adapter.notifyDataSetChanged()
 
             updateSearchHistory()
-            historyLabel.visibility = View.VISIBLE
-            historyLayout.visibility = View.VISIBLE
-            clearHistoryBtn.visibility = View.VISIBLE
+            if(searchHistory.isNotEmpty()) {
+                historyLabel.visibility = View.VISIBLE
+                historyLayout.visibility = View.VISIBLE
+                clearHistoryBtn.visibility = View.VISIBLE
+            }
             recyclerView.visibility = View.GONE
             placeholderLayoutError.visibility = View.GONE
 
             val inputMethodManager =
                 getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
             inputMethodManager?.hideSoftInputFromWindow(clearBtn.windowToken, 0)
-            //trackList.clear()
         }
 
         searchRequest.setOnFocusChangeListener{ _, hasFocus ->
-            if (hasFocus && searchRequest.text.isEmpty()){
+            if (hasFocus && searchRequest.text.isEmpty() && searchHistory.isNotEmpty()){
                 updateSearchHistory()
                 historyLabel.visibility = View.VISIBLE
                 historyLayout.visibility = View.VISIBLE
@@ -155,6 +153,7 @@ class SearchActivity : AppCompatActivity() {
                 if (s.toString().isEmpty()){
                     trackList.clear()
                 }
+
             }
         }
         searchRequest.addTextChangedListener(simpleTextWatcher)
@@ -235,7 +234,7 @@ class SearchActivity : AppCompatActivity() {
     private fun updateSearchHistory(){
         val historyTrackList = searchHistory.getTrackFromHistory()
 
-        if (historyTrackList.isNotEmpty() && searchRequest.text.isEmpty()){
+        if (historyTrackList.isNotEmpty() && searchRequest.text.isEmpty() && searchRequest.hasFocus()){
             historyAdapter.updateList(historyTrackList)
 
             recyclerView.visibility = View.GONE
