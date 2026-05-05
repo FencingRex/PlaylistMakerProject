@@ -14,4 +14,6 @@
     <string name="errConnection">Connection Error</string>
     <string name="errDownload">Downloadind failed</string>
     <string name="refresh">Refresh</string>
+    <string name="clearHistory">Clear history</string>
+    <string name="searched">You searched</string>
 </resources>

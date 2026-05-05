@@ -19,4 +19,6 @@
     <string name="errConnection">Проблемы со связью</string>
     <string name="errDownload">Загрузка не удалась. Проверьте подключение к интернету</string>
     <string name="refresh">Обновить</string>
+    <string name="clearHistory">Очистить историю</string>
+    <string name="searched">Вы искали</string>
 </resources>

@@ -13,7 +13,7 @@
         style="@style/CustomToolbarStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+
         app:navigationIcon="@drawable/ic_arrow_back_24"
         app:title="@string/search">
 
@@ -24,6 +24,8 @@
         android:layout_height="wrap_content"
         android:minHeight="@dimen/buttonSize"
         android:orientation="vertical"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         >
 
         <EditText
@@ -93,14 +95,45 @@
             android:id="@+id/refreshButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/refreshButton"
+            style="@style/searchScreenButton"
+            android:text="@string/refresh"
             android:textFontWeight="500"
             />
 
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/history"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone">
+        <TextView
+            android:id="@+id/historyHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/historyHeaderText"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            tools:itemCount="10"
+            android:layout_marginTop="8dp"
+            android:id="@+id/searchedTracks"
+            />
+        <Button
+            android:id="@+id/cleanHistory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="8dp"
+            style="@style/searchScreenButton"
+            android:text="@string/clearHistory"
+            android:textFontWeight="500"/>
     </LinearLayout>
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/searchResults"
         />
+
 </LinearLayout>
