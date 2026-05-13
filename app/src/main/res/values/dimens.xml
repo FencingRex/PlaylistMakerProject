@@ -31,4 +31,5 @@
     <dimen name="marginBottom">24dp</dimen>
     <dimen name="textFontWeight">400</dimen>
     <dimen name="placeholderTextSize">19sp</dimen>
+    <dimen name="trackInfoTextLineSize">13dp</dimen>
 </resources>

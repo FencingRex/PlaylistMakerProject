@@ -3,6 +3,7 @@ package com.practicum.project.playlistmaker
 import android.os.Bundle
 import android.text.Editable
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.text.TextWatcher
 import android.util.Log
@@ -184,16 +185,18 @@ class SearchActivity : AppCompatActivity() {
         searchRequest.setText(searchQuery)
     }
     private fun setRecyclerView(){
-        Log.d("recyclerView","run recyclerView")
-
         recyclerView = findViewById(R.id.searchResults)
         historyRecyclerView = findViewById(R.id.searchedTracks)
 
         adapter = SearchAdapter(trackList) {
             searchHistory.addTrackToHistory(it)
+            val trackIntent = Intent(this, PlayerActivity::class.java).apply{putExtra("Track",(it)) }
+            startActivity(trackIntent)
         }
         historyAdapter = SearchAdapter(mutableListOf()){
             searchHistory.addTrackToHistory(it)
+            val trackIntent = Intent(this, PlayerActivity::class.java).apply{putExtra("Track",(it)) }
+            startActivity(trackIntent)
         }
 
         recyclerView.layoutManager = LinearLayoutManager(this)

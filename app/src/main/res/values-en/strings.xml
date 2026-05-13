@@ -16,4 +16,9 @@
     <string name="refresh">Refresh</string>
     <string name="clearHistory">Clear history</string>
     <string name="searched">You searched</string>
+    <string name="duration">Duration</string>
+    <string name="albumName">Album</string>
+    <string name="albumYear">Year</string>
+    <string name="albumGenre">Genre</string>
+    <string name="country">Country</string>
 </resources>
