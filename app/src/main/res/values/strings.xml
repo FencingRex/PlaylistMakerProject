@@ -21,4 +21,9 @@
     <string name="refresh">Обновить</string>
     <string name="clearHistory">Очистить историю</string>
     <string name="searched">Вы искали</string>
+    <string name="duration">Длительность</string>
+    <string name="albumName">Альбом</string>
+    <string name="albumYear">Год</string>
+    <string name="albumGenre">Жанр</string>
+    <string name="country">Страна</string>
 </resources>
