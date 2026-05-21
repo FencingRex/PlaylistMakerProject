@@ -52,7 +52,6 @@ class PlayerActivity: AppCompatActivity() {
             insets
         }
         val playerBack = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
-        //Log.d("track Value","$track")
 
         playerBack.setOnClickListener { finish() }
 
@@ -113,9 +112,11 @@ class PlayerActivity: AppCompatActivity() {
         mediaPlayer.setOnPreparedListener {
             play.isEnabled = true
             playerState = STATE_PREPARED
+            secondsLeftTextView?.text = "00:00"
         }
         mediaPlayer.setOnCompletionListener {
             playerState = STATE_PREPARED
+            secondsLeftTextView?.text = "00:00"
         }
     }
     private fun startPlayer(){
@@ -137,19 +138,18 @@ class PlayerActivity: AppCompatActivity() {
         val seconds = milliseconds / 1000
         return String.format("%02d:%02d", seconds / 60, seconds % 60)
     }
-    private fun startTimer(elapsedTimeBeforePuse: Long){
+    private fun startTimer(elapsedTimeBeforePause: Long){
         val trackDuration = mediaPlayer.duration.toLong() ?: 0L
         startTime = System.currentTimeMillis()
 
         timerRunnable = object : Runnable{
             override fun run(){
-                val currentElapsedTime = (System.currentTimeMillis() - startTime) + elapsedTimeBeforePuse
+                val currentElapsedTime = mediaPlayer.currentPosition.toLong()
                 val remainingTime = trackDuration - currentElapsedTime
                 if (remainingTime > 0 && playerState == STATE_PLAYING){
-                    //val seconds = remainingTime / DELAY
-                    secondsLeftTextView?.text = formatTime(remainingTime) //String.format("%02d:%02d", seconds / 60, seconds % 60)
+                    secondsLeftTextView?.text = formatTime(currentElapsedTime)
                     mainThreadHandler?.postDelayed(this,UPDATE_TIME_INTERVAL)
-                } else if(remainingTime <= 0){
+                } else if(remainingTime <= 0 ){
                     secondsLeftTextView?.text = "00:00"
                     play.setImageResource(R.drawable.ic_button_play_100)
                     playerState = STATE_PREPARED
@@ -158,27 +158,7 @@ class PlayerActivity: AppCompatActivity() {
             }
         }
         mainThreadHandler?.post(timerRunnable!!)
-       // mainThreadHandler?.post(startTimerTask(startTime, trackDuration))
     }
-
-    /*private fun startTimerTask(startTime: Long,duration: Long): Runnable{
-
-        return object : Runnable{
-            override fun run(){
-                val elapsedTime = System.currentTimeMillis() - startTime
-                val remainingTime = duration - elapsedTime
-                if (remainingTime > 0){
-                    val seconds = remainingTime / DELAY
-                    secondsLeftTextView?.text = String.format("%02d:%02d", seconds / 60, seconds % 60)
-                    mainThreadHandler?.postDelayed(this,UPDATE_TIME_INTERVAL)
-                } else{
-                    secondsLeftTextView?.text = "00:00"
-                    play.setImageResource(R.drawable.ic_button_play_100)
-                    playerState = STATE_PREPARED
-                }
-            }
-        }
-    }*/
     private fun stopTimer(){
        if (startTime > 0){
            totalElapsedTime = (System.currentTimeMillis() - startTime) + totalElapsedTime
