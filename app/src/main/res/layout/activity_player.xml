@@ -125,7 +125,7 @@
             app:layout_constraintRight_toLeftOf="@id/playButton"
             />
 
-        <!--<ImageButton
+        <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/playButton"
@@ -135,8 +135,8 @@
             app:layout_constraintLeft_toRightOf="@id/addButton"
             app:layout_constraintRight_toLeftOf="@id/favoriteButton"
             app:layout_constraintBottom_toTopOf="@id/trackDuration"
-            />-->
-        <ImageView
+            />
+        <!--<ImageView
             android:id="@+id/playButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -148,7 +148,7 @@
             app:layout_constraintTop_toBottomOf="@+id/artistName"
             app:layout_constraintLeft_toRightOf="@id/addButton"
             app:layout_constraintRight_toLeftOf="@id/favoriteButton"
-            app:layout_constraintBottom_toTopOf="@id/trackDuration" />
+            app:layout_constraintBottom_toTopOf="@id/trackDuration" />-->
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
