@@ -79,7 +79,7 @@ class PlayerActivity: AppCompatActivity() {
         txOriginCountry.text = track?.country.toString()
 
         sampleUrl = track?.previewUrl.toString()
-
+        secondsLeftTextView?.text = "00:00"
         preparePlayer()
 
         val radiusInPx = 2.dpToPx(albumCover.context)
@@ -139,17 +139,19 @@ class PlayerActivity: AppCompatActivity() {
         return String.format("%02d:%02d", seconds / 60, seconds % 60)
     }
     private fun startTimer(elapsedTimeBeforePause: Long){
-        val trackDuration = mediaPlayer.duration.toLong() ?: 0L
+        //val trackDuration = mediaPlayer.duration.toLong()
         startTime = System.currentTimeMillis()
 
         timerRunnable = object : Runnable{
             override fun run(){
                 val currentElapsedTime = mediaPlayer.currentPosition.toLong()
-                val remainingTime = trackDuration - currentElapsedTime
-                if (remainingTime > 0 && playerState == STATE_PLAYING){
+                //val remainingTime = trackDuration - currentElapsedTime
+                //Log.d("time vars", "currentElapsedTime: $currentElapsedTime - trackDuration: $trackDuration")
+                if (currentElapsedTime < 29970L && playerState == STATE_PLAYING){  //remainingTime
                     secondsLeftTextView?.text = formatTime(currentElapsedTime)
                     mainThreadHandler?.postDelayed(this,UPDATE_TIME_INTERVAL)
-                } else if(remainingTime <= 0 ){
+
+                } else if(currentElapsedTime >= 29970L ){ //remainingTime
                     secondsLeftTextView?.text = "00:00"
                     play.setImageResource(R.drawable.ic_button_play_100)
                     playerState = STATE_PREPARED
@@ -184,7 +186,7 @@ class PlayerActivity: AppCompatActivity() {
         private const val STATE_PREPARED = 1
         private const val STATE_PLAYING = 2
         private const val STATE_PAUSED = 3
-        private const val DELAY = 1000L
+        //private const val DELAY = 1000L
         private const val UPDATE_TIME_INTERVAL = 500L
     }
 }
