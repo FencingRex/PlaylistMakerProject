@@ -14,7 +14,6 @@ class SearchAdapter(
 
     override fun onBindViewHolder(holder: SearchViewHolder, position: Int) {
         val track = searchResults[position]
-        //holder.clearTexts()
         holder.bind(searchResults[position])
 
         holder.itemView.setOnClickListener {

@@ -25,11 +25,16 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlin.toString
 import com.practicum.project.playlistmaker.iTunesAPI.SearchAPI
 import com.practicum.project.playlistmaker.iTunesAPI.SearchResponse
+import okhttp3.internal.http2.Http2Reader
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import android.os.Handler
+import android.os.Looper
+import android.widget.FrameLayout
+import android.widget.ProgressBar
 
 class SearchActivity : AppCompatActivity() {
     private lateinit var searchRequest: EditText
@@ -54,13 +59,17 @@ class SearchActivity : AppCompatActivity() {
 
     private val iTunesSearch = retrofit.create(SearchAPI::class.java)
     private val trackList: MutableList<Track> = mutableListOf()
-    //private val trackList = ArrayList<Track>()
     private lateinit var searchHistory: SearchHistory
     private lateinit var historyLabel: TextView
     private lateinit var clearHistoryBtn: Button
     private lateinit var historyAdapter: SearchAdapter
     private lateinit var historyLayout: LinearLayout
     private lateinit var sharedPreferences : SharedPreferences
+
+    private var isClickAllowed = true
+    private val handler = Handler(Looper.getMainLooper())
+    private lateinit var progressLayout: FrameLayout
+    private lateinit var progressBar: ProgressBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,10 +94,15 @@ class SearchActivity : AppCompatActivity() {
         historyLayout = findViewById(R.id.history)
         historyLabel = findViewById(R.id.historyHeader)
         clearHistoryBtn = findViewById(R.id.cleanHistory)
+        progressLayout = findViewById(R.id.progress)
+        progressBar = findViewById(R.id.progressBar)
         sharedPreferences = getSharedPreferences(SearchHistory.SEARCH_HISTORY_PREF, MODE_PRIVATE)
         searchHistory = SearchHistory(sharedPreferences)
 
         searchBack.setOnClickListener { finish() }
+
+        progressLayout.visibility = View.GONE
+        progressBar.visibility = View.GONE
 
         clearHistoryBtn.setOnClickListener {
             searchHistory.clearHistory()
@@ -137,19 +151,26 @@ class SearchActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 clearBtn.isVisible = !s.isNullOrEmpty()
-
+                searchDebounce()
                 if (s.isNullOrEmpty()){
                     updateSearchHistory()
+                    handler.removeCallbacks(searchRunnable)
                     recyclerView.visibility = View.GONE
                     placeholderLayoutError.visibility = View.GONE
+                    progressLayout.visibility = View.VISIBLE
+                    progressBar.visibility = View.VISIBLE
                 } else{
                     historyLabel.visibility = View.GONE
                     historyLayout.visibility = View.GONE
                     clearHistoryBtn.visibility = View.GONE
+                    progressLayout.visibility = View.GONE
+                    progressBar.visibility = View.GONE
+                    //searchDebounce()
                 }
             }
 
             override fun afterTextChanged(s: Editable?) {
+                searchDebounce()
                 searchQuery = s.toString()
                 if (s.toString().isEmpty()){
                     trackList.clear()
@@ -162,6 +183,7 @@ class SearchActivity : AppCompatActivity() {
         searchRequest.setOnEditorActionListener { _, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     if (searchRequest.text.isNotEmpty()){
+                        searchDebounce()
                         searchTrack(searchRequest.text.toString())
                         setRecyclerView()
                     }
@@ -173,6 +195,7 @@ class SearchActivity : AppCompatActivity() {
         }
 
     }
+    private val searchRunnable = Runnable {searchTrack(searchRequest.text.toString())}
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -188,15 +211,22 @@ class SearchActivity : AppCompatActivity() {
         recyclerView = findViewById(R.id.searchResults)
         historyRecyclerView = findViewById(R.id.searchedTracks)
 
+
         adapter = SearchAdapter(trackList) {
-            searchHistory.addTrackToHistory(it)
-            val trackIntent = Intent(this, PlayerActivity::class.java).apply{putExtra("Track",(it)) }
-            startActivity(trackIntent)
+            if(clickDebounce()) {
+                searchHistory.addTrackToHistory(it)
+                val trackIntent =
+                    Intent(this, PlayerActivity::class.java).apply { putExtra("Track", (it)) }
+                startActivity(trackIntent)
+            }
         }
         historyAdapter = SearchAdapter(mutableListOf()){
-            searchHistory.addTrackToHistory(it)
-            val trackIntent = Intent(this, PlayerActivity::class.java).apply{putExtra("Track",(it)) }
-            startActivity(trackIntent)
+            if (clickDebounce()) {
+                searchHistory.addTrackToHistory(it)
+                val trackIntent =
+                    Intent(this, PlayerActivity::class.java).apply { putExtra("Track", (it)) }
+                startActivity(trackIntent)
+            }
         }
 
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -210,8 +240,10 @@ class SearchActivity : AppCompatActivity() {
 
 
     private fun searchTrack(searchValue: String){
+        showProgressBar()
         iTunesSearch.search(searchValue).enqueue(object : Callback<SearchResponse> {
             override fun onResponse (call: Call<SearchResponse>, response: Response<SearchResponse>) {
+                hideProgressBar()
                 if (response.isSuccessful) {
                     val responseValue = response.body()?.results ?: emptyList()
                     if (responseValue.isNotEmpty()){
@@ -229,6 +261,7 @@ class SearchActivity : AppCompatActivity() {
                 call: Call<SearchResponse?>,
                 t: Throwable
             ) {
+                hideProgressBar()
                 errorHandle(RequestState.NotConnected)
             }
         })
@@ -242,6 +275,7 @@ class SearchActivity : AppCompatActivity() {
 
             recyclerView.visibility = View.GONE
             placeholderLayoutError.visibility = View.GONE
+            hideProgressBar()
 
             historyLayout.visibility = View.VISIBLE
             clearHistoryBtn.visibility = View.VISIBLE
@@ -252,9 +286,11 @@ class SearchActivity : AppCompatActivity() {
             clearHistoryBtn.visibility = View.GONE
             historyLabel.visibility = View.GONE
             historyRecyclerView.visibility = View.GONE
+            hideProgressBar()
         }
     }
     private fun errorHandle(status: RequestState){
+        hideProgressBar()
         when(status){
             RequestState.Success ->{
                 recyclerView.visibility = View.VISIBLE
@@ -287,10 +323,44 @@ class SearchActivity : AppCompatActivity() {
         }
 
     }
+    private fun clickDebounce(): Boolean{
+        val currentClick = isClickAllowed
+        if (isClickAllowed){
+            isClickAllowed = false
+            handler.postDelayed({isClickAllowed = true}, CLICK_DEBOUNCE_DELAY)
+        }
+        return currentClick
+    }
+
+    private fun searchDebounce(){
+        handler.removeCallbacks(searchRunnable)
+        handler.postDelayed(searchRunnable,SEARCH_DEBOUNCE_DELAY)
+    }
     sealed interface RequestState {
         data object Empty: RequestState
         data object Success: RequestState
         data object NotConnected: RequestState
         data object NotFound: RequestState
+    }
+    private fun showProgressBar(){
+        progressLayout.visibility = View.VISIBLE
+        progressBar.visibility = View.VISIBLE
+
+        recyclerView.visibility = View.GONE
+        placeholderLayoutError.visibility = View.GONE
+        historyLayout.visibility = View.GONE
+    }
+    private fun hideProgressBar(){
+        progressLayout.visibility = View.GONE
+        progressBar.visibility = View.GONE
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        handler.removeCallbacks(searchRunnable)
+    }
+    companion object{
+        private const val CLICK_DEBOUNCE_DELAY = 1000L
+        private const val SEARCH_DEBOUNCE_DELAY = 2000L
     }
 }
