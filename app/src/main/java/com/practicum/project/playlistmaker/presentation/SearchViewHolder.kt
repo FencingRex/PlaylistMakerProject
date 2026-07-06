@@ -1,17 +1,21 @@
-package com.practicum.project.playlistmaker
+package com.practicum.project.playlistmaker.presentation
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import android.content.Context
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.practicum.project.playlistmaker.R
+import com.practicum.project.playlistmaker.Track
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class SearchViewHolder(parent: ViewGroup): RecyclerView.ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.activity_search_result_item,parent,false)) {
+class SearchViewHolder(parent: ViewGroup): RecyclerView.ViewHolder(
+    LayoutInflater.from(parent.context).inflate(
+        R.layout.activity_search_result_item,parent,false)) {
     private val coverView: ImageView = itemView.findViewById(R.id.cover)
     private val trackView: TextView = itemView.findViewById(R.id.trackName)
     private val artistView: TextView = itemView.findViewById(R.id.artistName)

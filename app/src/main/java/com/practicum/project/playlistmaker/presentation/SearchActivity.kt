@@ -1,40 +1,42 @@
-package com.practicum.project.playlistmaker
+package com.practicum.project.playlistmaker.presentation
 
-import android.os.Bundle
-import android.text.Editable
-import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlin.toString
-import com.practicum.project.playlistmaker.iTunesAPI.SearchAPI
+import com.practicum.project.playlistmaker.PlayerActivity
+import com.practicum.project.playlistmaker.R
+import com.practicum.project.playlistmaker.SearchAdapter
+import com.practicum.project.playlistmaker.SearchHistory
+import com.practicum.project.playlistmaker.Track
+import com.practicum.project.playlistmaker.data.network.SearchAPI
 import com.practicum.project.playlistmaker.iTunesAPI.SearchResponse
-import okhttp3.internal.http2.Http2Reader
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import android.os.Handler
-import android.os.Looper
-import android.widget.FrameLayout
-import android.widget.ProgressBar
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 class SearchActivity : AppCompatActivity() {
     private lateinit var searchRequest: EditText
@@ -80,7 +82,7 @@ class SearchActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        val searchBack = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
+        val searchBack = findViewById<Toolbar>(R.id.toolbar)
 
         searchRequest = findViewById(R.id.searchInputText)
         clearBtn = findViewById(R.id.clearIcon)
@@ -124,7 +126,7 @@ class SearchActivity : AppCompatActivity() {
             placeholderLayoutError.visibility = View.GONE
 
             val inputMethodManager =
-                getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+                getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
             inputMethodManager?.hideSoftInputFromWindow(clearBtn.windowToken, 0)
         }
 
@@ -213,14 +215,14 @@ class SearchActivity : AppCompatActivity() {
 
 
         adapter = SearchAdapter(trackList) {
-            if(clickDebounce()) {
+            if (clickDebounce()) {
                 searchHistory.addTrackToHistory(it)
                 val trackIntent =
                     Intent(this, PlayerActivity::class.java).apply { putExtra("Track", (it)) }
                 startActivity(trackIntent)
             }
         }
-        historyAdapter = SearchAdapter(mutableListOf()){
+        historyAdapter = SearchAdapter(mutableListOf()) {
             if (clickDebounce()) {
                 searchHistory.addTrackToHistory(it)
                 val trackIntent =
@@ -310,7 +312,7 @@ class SearchActivity : AppCompatActivity() {
             RequestState.NotConnected ->{
                 recyclerView.visibility = View.GONE
                 placeholderErrorImage.visibility = View.GONE
-                placeholderErrorText.visibility =View.GONE
+                placeholderErrorText.visibility = View.GONE
                 placeholderLayoutError.visibility = View.VISIBLE
                 placeholderConnectionImage.visibility = View.VISIBLE
                 placeholderConnectionText.visibility = View.VISIBLE

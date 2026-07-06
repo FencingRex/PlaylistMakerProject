@@ -2,6 +2,7 @@ package com.practicum.project.playlistmaker
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.practicum.project.playlistmaker.presentation.SearchViewHolder
 
 class SearchAdapter(
     private var searchResults: MutableList<Track>,
