@@ -1,10 +1,9 @@
-package com.practicum.project.playlistmaker
+package com.practicum.project.playlistmaker.data
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
 
-
-class App: Application (){
+class App: Application(){
     var darkTheme = false
     override fun onCreate() {
         super.onCreate()

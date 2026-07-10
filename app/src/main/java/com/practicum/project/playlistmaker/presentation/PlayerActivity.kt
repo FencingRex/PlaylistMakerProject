@@ -1,22 +1,23 @@
-package com.practicum.project.playlistmaker
+package com.practicum.project.playlistmaker.presentation
 
 import android.content.Context
-import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.content.IntentCompat
-import android.util.Log
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.core.content.IntentCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.practicum.project.playlistmaker.R
+import com.practicum.project.playlistmaker.domain.models.Track
 
 class PlayerActivity: AppCompatActivity() {
     private lateinit var txTrack: TextView
@@ -51,7 +52,7 @@ class PlayerActivity: AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        val playerBack = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
+        val playerBack = findViewById<Toolbar>(R.id.toolbar)
 
         playerBack.setOnClickListener { finish() }
 

@@ -25,18 +25,14 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.practicum.project.playlistmaker.PlayerActivity
+import com.practicum.project.playlistmaker.Creator
 import com.practicum.project.playlistmaker.R
-import com.practicum.project.playlistmaker.SearchAdapter
-import com.practicum.project.playlistmaker.SearchHistory
-import com.practicum.project.playlistmaker.Track
-import com.practicum.project.playlistmaker.data.network.SearchAPI
+import com.practicum.project.playlistmaker.domain.api.TracksInteractor
+import com.practicum.project.playlistmaker.domain.models.Track
 import com.practicum.project.playlistmaker.iTunesAPI.SearchResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 class SearchActivity : AppCompatActivity() {
     private lateinit var searchRequest: EditText
@@ -52,16 +48,17 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var placeholderConnectionImage: ImageView
     private lateinit var placeholderLayoutError: LinearLayout
     private lateinit var adapter: SearchAdapter
-    private val iTunesBaseUrl: String = "https://itunes.apple.com" //R.string.baseUrl.toString()
+//    private val iTunesBaseUrl: String = "https://itunes.apple.com" //R.string.baseUrl.toString()
 
-    private val retrofit = Retrofit.Builder()
-        .baseUrl(iTunesBaseUrl)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-
-    private val iTunesSearch = retrofit.create(SearchAPI::class.java)
+//    private val retrofit = Retrofit.Builder()
+//        .baseUrl(iTunesBaseUrl)
+//        .addConverterFactory(GsonConverterFactory.create())
+//        .build()
+//
+//    private val iTunesSearch = retrofit.create(SearchAPI::class.java)
     private val trackList: MutableList<Track> = mutableListOf()
-    private lateinit var searchHistory: SearchHistory
+//    private lateinit var searchHistory: SearchHistory
+
     private lateinit var historyLabel: TextView
     private lateinit var clearHistoryBtn: Button
     private lateinit var historyAdapter: SearchAdapter
@@ -72,6 +69,7 @@ class SearchActivity : AppCompatActivity() {
     private val handler = Handler(Looper.getMainLooper())
     private lateinit var progressLayout: FrameLayout
     private lateinit var progressBar: ProgressBar
+    private val tracksInteractor = Creator.provideTrackInteractor()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -98,8 +96,10 @@ class SearchActivity : AppCompatActivity() {
         clearHistoryBtn = findViewById(R.id.cleanHistory)
         progressLayout = findViewById(R.id.progress)
         progressBar = findViewById(R.id.progressBar)
-        sharedPreferences = getSharedPreferences(SearchHistory.SEARCH_HISTORY_PREF, MODE_PRIVATE)
-        searchHistory = SearchHistory(sharedPreferences)
+
+        //sharedPreferences = getSharedPreferences(SearchHistory.SEARCH_HISTORY_PREF, MODE_PRIVATE)
+        //searchHistory = SearchHistory(sharedPreferences)
+        sharedPreferences = getSharedPreferences()
 
         searchBack.setOnClickListener { finish() }
 
@@ -216,7 +216,9 @@ class SearchActivity : AppCompatActivity() {
 
         adapter = SearchAdapter(trackList) {
             if (clickDebounce()) {
+                TracksInteractor.TracksConsumer()
                 searchHistory.addTrackToHistory(it)
+
                 val trackIntent =
                     Intent(this, PlayerActivity::class.java).apply { putExtra("Track", (it)) }
                 startActivity(trackIntent)

@@ -1,8 +1,9 @@
 package com.practicum.project.playlistmaker.iTunesAPI
 
-import com.practicum.project.playlistmaker.Track
+import com.practicum.project.playlistmaker.data.dto.Response
+import com.practicum.project.playlistmaker.domain.models.Track
 
 data class SearchResponse(
-    val resultCount: Int,
-    val results:List<Track>
-)
+    var resultCount: Int,
+    val results: MutableList<Track>
+) : Response()

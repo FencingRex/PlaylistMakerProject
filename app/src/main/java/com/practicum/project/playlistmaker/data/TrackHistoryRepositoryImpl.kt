@@ -1,12 +1,14 @@
-package com.practicum.project.playlistmaker
+package com.practicum.project.playlistmaker.data
 
 import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.practicum.project.playlistmaker.data.dto.TrackDTO
+import com.practicum.project.playlistmaker.domain.api.TrackHistoryRepository
 import com.practicum.project.playlistmaker.domain.models.Track
 
-class SearchHistory(private val sharedPreferences: SharedPreferences) {
-    fun addTrackToHistory(track: Track){
+class TrackHistoryRepositoryImpl(private val sharedPreferences: SharedPreferences): TrackHistoryRepository {
+    override fun addTrackToHistory(track: TrackDTO){
         val history = getTrackFromHistory()
         history.removeIf { it.trackId == track.trackId }
         history.add(0,track)
@@ -17,29 +19,25 @@ class SearchHistory(private val sharedPreferences: SharedPreferences) {
         saveTrackToPref(history)
 
     }
-    fun saveTrackToPref(trackList: MutableList<Track>){
+     override fun saveTrackToPref(trackList: ArrayList<TrackDTO>){
         sharedPreferences.edit()
             .putString(SEARCH_HISTORY_KEY, Gson().toJson(trackList))
             .apply()
 
     }
 
-    fun getTrackFromHistory(): MutableList<Track>{
-        val value = sharedPreferences.getString(SEARCH_HISTORY_KEY,null) ?: return mutableListOf()
+    override fun getTrackFromHistory(): ArrayList<TrackDTO>{
+        val value = sharedPreferences.getString(SEARCH_HISTORY_KEY,null) ?: return ArrayList()
         val type  = object : TypeToken<MutableList<Track>>() {}.type
-        val result: MutableList<Track> = Gson().fromJson(value, type)
+        val result: ArrayList<TrackDTO> = Gson().fromJson(value, type)
         return  result
     }
 
-    fun clearHistory(){
+    override fun clearHistory(){
         sharedPreferences.edit()
             .clear()
             .apply()
 
-    }
-
-    fun isNotEmpty(): Boolean{
-        return getTrackFromHistory().isNotEmpty()
     }
     companion object{
         const val SEARCH_HISTORY_PREF = "historyPreferences"

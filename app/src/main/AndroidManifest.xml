@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar">
         <activity
-            android:name=".PlayerActivity"
+            android:name=".presentation.PlayerActivity"
             android:exported="false" />
         <activity
             android:name=".ui.tracks.SearchActivity"

@@ -5,7 +5,9 @@ import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.practicum.project.playlistmaker.R
-
+import com.practicum.project.playlistmaker.presentation.SearchActivity
+import com.practicum.project.playlistmaker.presentation.SettingsActivity
+import com.practicum.project.playlistmaker.presentation.MediaActivity
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

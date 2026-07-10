@@ -5,7 +5,7 @@ import com.practicum.project.playlistmaker.data.dto.Response
 import com.practicum.project.playlistmaker.data.dto.TrackSearchRequest
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.io.IOException
+
 
 class RetrofitNetworkClient: NetworkClient {
     private val iTunesBaseUrl: String = "https://itunes.apple.com"

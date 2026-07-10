@@ -1,4 +1,5 @@
-package com.practicum.project.playlistmaker
+package com.practicum.project.playlistmaker.domain.models
+
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 import java.text.SimpleDateFormat
