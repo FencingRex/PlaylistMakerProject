@@ -39,6 +39,10 @@ class TrackHistoryRepositoryImpl(private val sharedPreferences: SharedPreference
             .apply()
 
     }
+
+    override fun isNotEmpty(): Boolean {
+        return getTrackFromHistory().isNotEmpty()
+    }
     companion object{
         const val SEARCH_HISTORY_PREF = "historyPreferences"
         const val SEARCH_HISTORY_KEY = "searchHistoryKey"

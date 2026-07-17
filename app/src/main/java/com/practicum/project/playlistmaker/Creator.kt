@@ -10,7 +10,11 @@ import com.practicum.project.playlistmaker.domain.impl.TracksInteractorImpl
 import com.practicum.project.playlistmaker.data.App.Companion.SAVED_THEME_STATE
 import com.practicum.project.playlistmaker.data.TrackHistoryRepositoryImpl.Companion.SEARCH_HISTORY_PREF
 import androidx.appcompat.app.AppCompatActivity.MODE_PRIVATE
+import com.practicum.project.playlistmaker.data.SettingsRepositoryImpl
 import com.practicum.project.playlistmaker.data.TrackHistoryRepositoryImpl
+import com.practicum.project.playlistmaker.domain.api.SettingsInteractor
+import com.practicum.project.playlistmaker.domain.api.SettingsRepository
+import com.practicum.project.playlistmaker.domain.impl.SettingsInteractorImpl
 
 object Creator {
     private lateinit var application: Application
@@ -21,8 +25,14 @@ object Creator {
         return TracksRepositoryImpl(RetrofitNetworkClient(),
             TrackHistoryRepositoryImpl(application.getSharedPreferences(SEARCH_HISTORY_PREF, MODE_PRIVATE)))
         }
-
     fun provideTrackInteractor(): TracksInteractor{
         return TracksInteractorImpl(getTracksRepository())
+    }
+    private fun getSettingsRepository(): SettingsRepository{
+        return SettingsRepositoryImpl(application.getSharedPreferences(SAVED_THEME_STATE,MODE_PRIVATE))
+    }
+    fun provideSettingsInteractor(): SettingsInteractor{
+        return SettingsInteractorImpl(getSettingsRepository())
+
     }
 }

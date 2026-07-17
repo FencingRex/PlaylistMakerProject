@@ -8,5 +8,5 @@ interface TrackHistoryRepository {
     fun addTrackToHistory(track: TrackDTO)
     fun getTrackFromHistory(): ArrayList<TrackDTO>
     fun clearHistory()
-
+    fun isNotEmpty(): Boolean
 }

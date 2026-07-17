@@ -6,7 +6,7 @@ import com.google.gson.reflect.TypeToken
 import com.practicum.project.playlistmaker.domain.models.Track
 
 class SearchHistory(private val sharedPreferences: SharedPreferences) {
-    fun addTrackToHistory(track: Track){
+   /* fun addTrackToHistory(track: Track){
         val history = getTrackFromHistory()
         history.removeIf { it.trackId == track.trackId }
         history.add(0,track)
@@ -41,6 +41,7 @@ class SearchHistory(private val sharedPreferences: SharedPreferences) {
     fun isNotEmpty(): Boolean{
         return getTrackFromHistory().isNotEmpty()
     }
+    */
     companion object{
         const val SEARCH_HISTORY_PREF = "historyPreferences"
         const val SEARCH_HISTORY_KEY = "searchHistoryKey"

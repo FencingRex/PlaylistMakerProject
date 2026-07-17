@@ -7,10 +7,13 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.google.android.material.switchmaterial.SwitchMaterial
+import com.practicum.project.playlistmaker.Creator
 import com.practicum.project.playlistmaker.data.App
 import com.practicum.project.playlistmaker.R
+import com.practicum.project.playlistmaker.domain.api.SettingsInteractor
 
 class SettingsActivity : AppCompatActivity() {
+    private lateinit var settingsInteractor: SettingsInteractor
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
@@ -23,13 +26,18 @@ class SettingsActivity : AppCompatActivity() {
         val application = applicationContext as App
 
 
-        themeSwitcher.isChecked = application.darkTheme
-
-        themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
-            application.switchTheme(checked)
-        }
+//        themeSwitcher.isChecked = application.darkTheme
+//
+//        themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
+//            application.switchTheme(checked)
+//        }
 
         backBtn.setOnClickListener { finish() }
+        
+        settingsInteractor = Creator.provideSettingsInteractor()
+        themeSwitcher.isChecked = settingsInteractor.getTheme()
+        themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
+            settingsInteractor.switchTheme(checked) }
 
         shareBtn.setOnClickListener {
             val shareIntent = Intent(Intent.ACTION_SEND)

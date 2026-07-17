@@ -99,7 +99,7 @@ class SearchActivity : AppCompatActivity() {
 
         //sharedPreferences = getSharedPreferences(SearchHistory.SEARCH_HISTORY_PREF, MODE_PRIVATE)
         //searchHistory = SearchHistory(sharedPreferences)
-        sharedPreferences = getSharedPreferences()
+        //sharedPreferences = getSharedPreferences()
 
         searchBack.setOnClickListener { finish() }
 
@@ -107,7 +107,7 @@ class SearchActivity : AppCompatActivity() {
         progressBar.visibility = View.GONE
 
         clearHistoryBtn.setOnClickListener {
-            searchHistory.clearHistory()
+            tracksInteractor.clearHistory()
             updateSearchHistory()
         }
 
@@ -117,7 +117,7 @@ class SearchActivity : AppCompatActivity() {
             adapter.notifyDataSetChanged()
 
             updateSearchHistory()
-            if(searchHistory.isNotEmpty()) {
+            if(tracksInteractor.isNotEmpty()) {
                 historyLabel.visibility = View.VISIBLE
                 historyLayout.visibility = View.VISIBLE
                 clearHistoryBtn.visibility = View.VISIBLE
@@ -131,7 +131,7 @@ class SearchActivity : AppCompatActivity() {
         }
 
         searchRequest.setOnFocusChangeListener{ _, hasFocus ->
-            if (hasFocus && searchRequest.text.isEmpty() && searchHistory.isNotEmpty()){
+            if (hasFocus && searchRequest.text.isEmpty() && tracksInteractor.isNotEmpty()){
                 updateSearchHistory()
                 historyLabel.visibility = View.VISIBLE
                 historyLayout.visibility = View.VISIBLE
@@ -167,7 +167,6 @@ class SearchActivity : AppCompatActivity() {
                     clearHistoryBtn.visibility = View.GONE
                     progressLayout.visibility = View.GONE
                     progressBar.visibility = View.GONE
-                    //searchDebounce()
                 }
             }
 
@@ -209,6 +208,7 @@ class SearchActivity : AppCompatActivity() {
         searchQuery = savedInstanceState.getString("savedSearchReq", "")
         searchRequest.setText(searchQuery)
     }
+
     private fun setRecyclerView(){
         recyclerView = findViewById(R.id.searchResults)
         historyRecyclerView = findViewById(R.id.searchedTracks)
@@ -216,8 +216,9 @@ class SearchActivity : AppCompatActivity() {
 
         adapter = SearchAdapter(trackList) {
             if (clickDebounce()) {
-                TracksInteractor.TracksConsumer()
-                searchHistory.addTrackToHistory(it)
+                tracksInteractor.addTrackToHistory(it)
+
+                //searchHistory.addTrackToHistory(it)
 
                 val trackIntent =
                     Intent(this, PlayerActivity::class.java).apply { putExtra("Track", (it)) }
@@ -226,7 +227,8 @@ class SearchActivity : AppCompatActivity() {
         }
         historyAdapter = SearchAdapter(mutableListOf()) {
             if (clickDebounce()) {
-                searchHistory.addTrackToHistory(it)
+                tracksInteractor.addTrackToHistory(it)
+                //searchHistory.addTrackToHistory(it)
                 val trackIntent =
                     Intent(this, PlayerActivity::class.java).apply { putExtra("Track", (it)) }
                 startActivity(trackIntent)
@@ -245,34 +247,54 @@ class SearchActivity : AppCompatActivity() {
 
     private fun searchTrack(searchValue: String){
         showProgressBar()
-        iTunesSearch.search(searchValue).enqueue(object : Callback<SearchResponse> {
-            override fun onResponse (call: Call<SearchResponse>, response: Response<SearchResponse>) {
-                hideProgressBar()
-                if (response.isSuccessful) {
-                    val responseValue = response.body()?.results ?: emptyList()
-                    if (responseValue.isNotEmpty()){
-                        trackList.addAll(responseValue)
+        tracksInteractor.searchTracks(searchValue, object:TracksInteractor.TracksConsumer{
+            override fun consume(foundTracks: List<Track>){
+                handler.post{
+                    hideProgressBar()
+                    if (foundTracks.isNotEmpty()){
+                        trackList.addAll(foundTracks)
                         errorHandle(RequestState.Success)
+                        adapter.updateList(trackList)
                     } else {
                         errorHandle(RequestState.NotFound)
                     }
-                } else {
+                }
+            }
+            override fun onFailure() {
+                handler.post {
+                    hideProgressBar()
                     errorHandle(RequestState.NotConnected)
                 }
             }
-
-            override fun onFailure(
-                call: Call<SearchResponse?>,
-                t: Throwable
-            ) {
-                hideProgressBar()
-                errorHandle(RequestState.NotConnected)
-            }
         })
+//        iTunesSearch.search(searchValue).enqueue(object : Callback<SearchResponse> {
+//            override fun onResponse (call: Call<SearchResponse>, response: Response<SearchResponse>) {
+//
+//                if (response.isSuccessful) {
+//                    val responseValue = response.body()?.results ?: emptyList()
+//                    if (responseValue.isNotEmpty()){
+//                        trackList.addAll(responseValue)
+//                        errorHandle(RequestState.Success)
+//                    } else {
+//                        errorHandle(RequestState.NotFound)
+//                    }
+//                } else {
+//                    errorHandle(RequestState.NotConnected)
+//                }
+//            }
+//
+//            override fun onFailure(
+//                call: Call<SearchResponse?>,
+//                t: Throwable
+//            ) {
+//                hideProgressBar()
+//                errorHandle(RequestState.NotConnected)
+//            }
+//        })
     }
 
     private fun updateSearchHistory(){
-        val historyTrackList = searchHistory.getTrackFromHistory()
+        val historyTrackList = tracksInteractor.getTrackFromHistory()
 
         if (historyTrackList.isNotEmpty() && searchRequest.text.isEmpty() && searchRequest.hasFocus()){
             historyAdapter.updateList(historyTrackList)
@@ -340,12 +362,6 @@ class SearchActivity : AppCompatActivity() {
         handler.removeCallbacks(searchRunnable)
         handler.postDelayed(searchRunnable,SEARCH_DEBOUNCE_DELAY)
     }
-    sealed interface RequestState {
-        data object Empty: RequestState
-        data object Success: RequestState
-        data object NotConnected: RequestState
-        data object NotFound: RequestState
-    }
     private fun showProgressBar(){
         progressLayout.visibility = View.VISIBLE
         progressBar.visibility = View.VISIBLE
@@ -362,6 +378,12 @@ class SearchActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         handler.removeCallbacks(searchRunnable)
+    }
+    sealed interface RequestState {
+        data object Empty: RequestState
+        data object Success: RequestState
+        data object NotConnected: RequestState
+        data object NotFound: RequestState
     }
     companion object{
         private const val CLICK_DEBOUNCE_DELAY = 1000L

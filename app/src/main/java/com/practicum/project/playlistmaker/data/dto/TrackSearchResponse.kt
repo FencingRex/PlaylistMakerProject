@@ -1,6 +1,7 @@
 package com.practicum.project.playlistmaker.data.dto
 
-class TrackSearchResponse(val searchType: String,
-                          val expression: String,
-                          val result: MutableList<TrackDTO>): Response() {
+import com.practicum.project.playlistmaker.domain.models.Track
+
+class TrackSearchResponse(   var resultCount: Int,
+                             val results: MutableList<Track>): Response() {
 }

@@ -16,8 +16,8 @@ class TracksRepositoryImpl(
     override fun searchTracks(expression: String): List<Track> {
         val response = networkClient.doRequest(TrackSearchRequest(expression))
         if (response.resultCode == 200) {
-            return (response as TrackSearchResponse).result.map {
-                Track(it.trackId,
+            return (response as TrackSearchResponse).results.map{
+                Track(it.trackId ,
                     it.trackName,
                     it.artistName,
                     it.trackTimeMillis,
@@ -37,31 +37,31 @@ class TracksRepositoryImpl(
         val dtoTracks = tracksList.map{ it.toDto()}
         trackHistoryRepository.saveTrackToPref(ArrayList(dtoTracks))
     }
-    fun addTrackToHistory(track: Track){
+    override fun addTrackToHistory(track: Track){
         val dtoTrack = track.toDto()
-            //getTrackFromHistory()
-//        history.removeIf { it.trackId == track.trackId }
-//        history.add(0,track)
-//
-//        if (history.size > LIMIT_QTY){
-//            history.removeAt(history.lastIndex)
-//        }
-//        saveTrackToPref(history)
-
+        trackHistoryRepository.addTrackToHistory(dtoTrack)
     }
 
-//    fun getTrackFromHistory(): MutableList<Track>{
-//        val value = sharedPreferences.getString(SEARCH_HISTORY_KEY,null) ?: return mutableListOf()
-//        val type  = object : TypeToken<MutableList<Track>>() {}.type
-//        val result: MutableList<Track> = Gson().fromJson(value, type)
-//        return  result
-//    }
-
-    fun clearHistory(){
+    override fun getTrackFromHistory(): ArrayList<Track> {
+        val dtoTracks = trackHistoryRepository.getTrackFromHistory()
+        return ArrayList(dtoTracks.map{it.toDomain()})
+    }
+    override fun clearHistory(){
         trackHistoryRepository.clearHistory()
 
     }
+
+    override fun isNotEmpty(): Boolean {
+        return trackHistoryRepository.getTrackFromHistory().isNotEmpty()
+    }
+
+    override fun saveTrackToPref(tracksList: ArrayList<TrackDTO>) {
+       trackHistoryRepository.saveTrackToPref(tracksList)
+    }
     fun Track.toDto(): TrackDTO =TrackDTO(trackId, trackName, artistName, trackTimeMillis, artworkUrl100,  collectionName, releaseDate, primaryGenreName, country, previewUrl
+    )
+    fun TrackDTO.toDomain(): Track = Track(
+        trackId, trackName, artistName, trackTimeMillis, artworkUrl100,  collectionName, releaseDate, primaryGenreName, country, previewUrl
     )
     companion object{
         const val SEARCH_HISTORY_PREF = "historyPreferences"

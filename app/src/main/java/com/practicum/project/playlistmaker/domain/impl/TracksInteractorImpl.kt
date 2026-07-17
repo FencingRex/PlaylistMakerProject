@@ -1,12 +1,12 @@
 package com.practicum.project.playlistmaker.domain.impl
 
-import com.practicum.project.playlistmaker.domain.api.TrackHistoryRepository
+import com.practicum.project.playlistmaker.data.dto.TrackDTO
 import com.practicum.project.playlistmaker.domain.api.TracksInteractor
 import com.practicum.project.playlistmaker.domain.api.TracksRepository
 import com.practicum.project.playlistmaker.domain.models.Track
 import java.util.concurrent.Executors
 
-class TracksInteractorImpl(private val repository: TracksRepository,private val historyRepository: TrackHistoryRepository): TracksInteractor {
+class TracksInteractorImpl(private val repository: TracksRepository): TracksInteractor {
     private val executor = Executors.newCachedThreadPool()
 
     override fun searchTracks(expression: String, consumer: TracksInteractor.TracksConsumer) {
@@ -16,27 +16,27 @@ class TracksInteractorImpl(private val repository: TracksRepository,private val 
     }
 
     override fun saveTrackToHistory(trackList: ArrayList<Track>) {
-        TODO("Not yet implemented")
+        repository.saveTrack(trackList)
     }
     override fun addTrackToHistory(track: Track){
-        historyRepository.addTrackToHistory(track)
+        repository.addTrackToHistory(track)
     }
 
     override fun clearHistory() {
-        historyRepository.clearHistory()
+        repository.clearHistory()
     }
 
     override fun getTrackFromHistory(): ArrayList<Track> {
-        return historyRepository.getTrackFromHistory()
+        return repository.getTrackFromHistory()
 
     }
 
-    override fun isNotEmpty() {
-        historyRepository.isNotEmpty()
+    override fun isNotEmpty(): Boolean {
+       return repository.isNotEmpty()
     }
 
-    override fun saveTrackToPref(trackList: ArrayList<Track>) {
-        TODO("Not yet implemented")
+    override fun saveTrackToPref(trackList: ArrayList<TrackDTO>) {
+        repository.saveTrackToPref(trackList)
     }
 
 }
