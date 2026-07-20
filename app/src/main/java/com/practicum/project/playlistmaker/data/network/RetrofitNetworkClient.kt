@@ -5,11 +5,8 @@ import com.practicum.project.playlistmaker.data.dto.Response
 import com.practicum.project.playlistmaker.data.dto.TrackSearchRequest
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-
-
+const val iTunesBaseUrl: String = "https://itunes.apple.com"
 class RetrofitNetworkClient: NetworkClient {
-    private val iTunesBaseUrl: String = "https://itunes.apple.com"
-
     private val retrofit = Retrofit.Builder()
         .baseUrl(iTunesBaseUrl)
         .addConverterFactory(GsonConverterFactory.create())

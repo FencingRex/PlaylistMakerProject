@@ -1,8 +1,5 @@
 package com.practicum.project.playlistmaker.data
 
-import android.content.SharedPreferences
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.practicum.project.playlistmaker.data.dto.TrackDTO
 import com.practicum.project.playlistmaker.data.dto.TrackSearchRequest
 import com.practicum.project.playlistmaker.data.dto.TrackSearchResponse
@@ -16,35 +13,33 @@ class TracksRepositoryImpl(
     override fun searchTracks(expression: String): List<Track> {
         val response = networkClient.doRequest(TrackSearchRequest(expression))
         if (response.resultCode == 200) {
-            return (response as TrackSearchResponse).results.map{
-                Track(it.trackId ,
-                    it.trackName,
-                    it.artistName,
-                    it.trackTimeMillis,
-                    it.artworkUrl100,
-                    it.collectionName,
-                    it.releaseDate,
-                    it.primaryGenreName,
-                    it.country,
-                    it.previewUrl)
+            return (response as TrackSearchResponse).results.map{ dto ->
+                Track(dto.trackId ,
+                    dto.trackName,
+                    dto.artistName,
+                    dto.trackTimeMillis,
+                    dto.artworkUrl100,
+                    dto.collectionName,
+                    dto.releaseDate,
+                    dto.primaryGenreName,
+                    dto.country,
+                    dto.previewUrl)
             }
         }else {
             return emptyList()
         }
     }
 
-    override fun saveTrack(tracksList: ArrayList<Track>) {
-        val dtoTracks = tracksList.map{ it.toDto()}
-        trackHistoryRepository.saveTrackToPref(ArrayList(dtoTracks))
+    override fun saveTrack(tracksList: List<Track>) {
+        trackHistoryRepository.saveTrackToPref(tracksList)
     }
     override fun addTrackToHistory(track: Track){
-        val dtoTrack = track.toDto()
-        trackHistoryRepository.addTrackToHistory(dtoTrack)
+        trackHistoryRepository.addTrackToHistory(track)
     }
 
     override fun getTrackFromHistory(): ArrayList<Track> {
         val dtoTracks = trackHistoryRepository.getTrackFromHistory()
-        return ArrayList(dtoTracks.map{it.toDomain()})
+        return ArrayList(dtoTracks)
     }
     override fun clearHistory(){
         trackHistoryRepository.clearHistory()
@@ -55,8 +50,9 @@ class TracksRepositoryImpl(
         return trackHistoryRepository.getTrackFromHistory().isNotEmpty()
     }
 
-    override fun saveTrackToPref(tracksList: ArrayList<TrackDTO>) {
-       trackHistoryRepository.saveTrackToPref(tracksList)
+    override fun saveTrackToPref(tracksList: List<Track>) {
+        tracksList.map { it.toDto() }
+        trackHistoryRepository.saveTrackToPref(tracksList)
     }
     fun Track.toDto(): TrackDTO =TrackDTO(trackId, trackName, artistName, trackTimeMillis, artworkUrl100,  collectionName, releaseDate, primaryGenreName, country, previewUrl
     )

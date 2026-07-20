@@ -1,6 +1,5 @@
 package com.practicum.project.playlistmaker.domain.impl
 
-import com.practicum.project.playlistmaker.data.dto.TrackDTO
 import com.practicum.project.playlistmaker.domain.api.TracksInteractor
 import com.practicum.project.playlistmaker.domain.api.TracksRepository
 import com.practicum.project.playlistmaker.domain.models.Track
@@ -39,7 +38,7 @@ class TracksInteractorImpl(private val repository: TracksRepository): TracksInte
        return repository.isNotEmpty()
     }
 
-    override fun saveTrackToPref(trackList: ArrayList<TrackDTO>) {
+    override fun saveTrackToPref(trackList: ArrayList<Track>) {
         repository.saveTrackToPref(trackList)
     }
 

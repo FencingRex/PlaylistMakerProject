@@ -8,29 +8,25 @@ import com.practicum.project.playlistmaker.domain.api.TrackHistoryRepository
 import com.practicum.project.playlistmaker.domain.models.Track
 
 class TrackHistoryRepositoryImpl(private val sharedPreferences: SharedPreferences): TrackHistoryRepository {
-    override fun addTrackToHistory(track: TrackDTO){
-        val history = getTrackFromHistory()
+    override fun addTrackToHistory(track: Track){
+        val dto = track.toDto()
+        val history = getTrackDtoListFromHistory()
         history.removeIf { it.trackId == track.trackId }
-        history.add(0,track)
+        history.add(0,dto)
 
         if (history.size > LIMIT_QTY){
             history.removeAt(history.lastIndex)
         }
-        saveTrackToPref(history)
-
+        saveTrackDtoList(history)
     }
-     override fun saveTrackToPref(trackList: ArrayList<TrackDTO>){
-        sharedPreferences.edit()
-            .putString(SEARCH_HISTORY_KEY, Gson().toJson(trackList))
-            .apply()
-
+     override fun saveTrackToPref(trackList: List<Track>){
+        val dtoList = trackList.map { it.toDto() }
+         saveTrackDtoList(ArrayList(dtoList))
     }
 
-    override fun getTrackFromHistory(): ArrayList<TrackDTO>{
-        val value = sharedPreferences.getString(SEARCH_HISTORY_KEY,null) ?: return ArrayList()
-        val type  = object : TypeToken<MutableList<TrackDTO>>() {}.type
-        val result: ArrayList<TrackDTO> = Gson().fromJson(value, type)
-        return  result
+    override fun getTrackFromHistory(): List<Track>{
+        val dtoList = getTrackDtoListFromHistory()
+        return dtoList.map { it.toDomain() }
     }
 
     override fun clearHistory(){
@@ -43,6 +39,23 @@ class TrackHistoryRepositoryImpl(private val sharedPreferences: SharedPreference
     override fun isNotEmpty(): Boolean {
         return getTrackFromHistory().isNotEmpty()
     }
+    private fun getTrackDtoListFromHistory(): ArrayList<TrackDTO>{
+        val value = sharedPreferences.getString(SEARCH_HISTORY_KEY,null) ?: return ArrayList()
+        val type  = object : TypeToken<ArrayList<TrackDTO>>() {}.type
+        val result: ArrayList<TrackDTO> = Gson().fromJson(value, type)
+        return  result
+    }
+    private fun saveTrackDtoList(trackDtoList: ArrayList<TrackDTO>) {
+        val json = Gson().toJson(trackDtoList)
+        sharedPreferences.edit()
+            .putString(SEARCH_HISTORY_KEY, json)
+            .apply()
+    }
+    fun Track.toDto(): TrackDTO =TrackDTO(trackId, trackName, artistName, trackTimeMillis, artworkUrl100,  collectionName, releaseDate, primaryGenreName, country, previewUrl
+    )
+    fun TrackDTO.toDomain(): Track = Track(
+        trackId, trackName, artistName, trackTimeMillis, artworkUrl100,  collectionName, releaseDate, primaryGenreName, country, previewUrl
+    )
     companion object{
         const val SEARCH_HISTORY_PREF = "historyPreferences"
         const val SEARCH_HISTORY_KEY = "searchHistoryKey"

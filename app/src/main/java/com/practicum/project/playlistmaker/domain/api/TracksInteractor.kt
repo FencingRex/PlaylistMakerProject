@@ -1,6 +1,5 @@
 package com.practicum.project.playlistmaker.domain.api
 
-import com.practicum.project.playlistmaker.data.dto.TrackDTO
 import com.practicum.project.playlistmaker.domain.models.Track
 
 interface TracksInteractor {
@@ -10,7 +9,7 @@ interface TracksInteractor {
     fun getTrackFromHistory(): ArrayList<Track>
     fun clearHistory()
     fun isNotEmpty(): Boolean
-    fun saveTrackToPref(trackList: ArrayList<TrackDTO>)
+    fun saveTrackToPref(trackList: ArrayList<Track>)
     interface TracksConsumer{
         fun consume(foundTracks: List<Track>)
         fun onFailure()
