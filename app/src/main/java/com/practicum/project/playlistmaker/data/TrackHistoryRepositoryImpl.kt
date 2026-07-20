@@ -28,7 +28,7 @@ class TrackHistoryRepositoryImpl(private val sharedPreferences: SharedPreference
 
     override fun getTrackFromHistory(): ArrayList<TrackDTO>{
         val value = sharedPreferences.getString(SEARCH_HISTORY_KEY,null) ?: return ArrayList()
-        val type  = object : TypeToken<MutableList<Track>>() {}.type
+        val type  = object : TypeToken<MutableList<TrackDTO>>() {}.type
         val result: ArrayList<TrackDTO> = Gson().fromJson(value, type)
         return  result
     }

@@ -11,7 +11,11 @@ class TracksInteractorImpl(private val repository: TracksRepository): TracksInte
 
     override fun searchTracks(expression: String, consumer: TracksInteractor.TracksConsumer) {
         executor.execute {
-            consumer.consume(repository.searchTracks(expression))
+            try {
+                consumer.consume(repository.searchTracks(expression))
+            } catch (e: Exception){
+                consumer.onFailure()
+            }
         }
     }
 

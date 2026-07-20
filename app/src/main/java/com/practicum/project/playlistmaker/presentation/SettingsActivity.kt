@@ -8,7 +8,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.practicum.project.playlistmaker.Creator
-import com.practicum.project.playlistmaker.data.App
 import com.practicum.project.playlistmaker.R
 import com.practicum.project.playlistmaker.domain.api.SettingsInteractor
 
@@ -23,14 +22,6 @@ class SettingsActivity : AppCompatActivity() {
         val supportBtn = findViewById<TextView>(R.id.supportBtn)
         val userAgreementBtn = findViewById<TextView>(R.id.userAgreemBtn)
         val themeSwitcher = findViewById<SwitchMaterial>(R.id.themeSwitcher)
-        val application = applicationContext as App
-
-
-//        themeSwitcher.isChecked = application.darkTheme
-//
-//        themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
-//            application.switchTheme(checked)
-//        }
 
         backBtn.setOnClickListener { finish() }
         

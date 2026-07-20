@@ -7,6 +7,7 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -29,10 +30,6 @@ import com.practicum.project.playlistmaker.Creator
 import com.practicum.project.playlistmaker.R
 import com.practicum.project.playlistmaker.domain.api.TracksInteractor
 import com.practicum.project.playlistmaker.domain.models.Track
-import com.practicum.project.playlistmaker.iTunesAPI.SearchResponse
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class SearchActivity : AppCompatActivity() {
     private lateinit var searchRequest: EditText
@@ -48,17 +45,7 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var placeholderConnectionImage: ImageView
     private lateinit var placeholderLayoutError: LinearLayout
     private lateinit var adapter: SearchAdapter
-//    private val iTunesBaseUrl: String = "https://itunes.apple.com" //R.string.baseUrl.toString()
-
-//    private val retrofit = Retrofit.Builder()
-//        .baseUrl(iTunesBaseUrl)
-//        .addConverterFactory(GsonConverterFactory.create())
-//        .build()
-//
-//    private val iTunesSearch = retrofit.create(SearchAPI::class.java)
     private val trackList: MutableList<Track> = mutableListOf()
-//    private lateinit var searchHistory: SearchHistory
-
     private lateinit var historyLabel: TextView
     private lateinit var clearHistoryBtn: Button
     private lateinit var historyAdapter: SearchAdapter
@@ -70,9 +57,9 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var progressLayout: FrameLayout
     private lateinit var progressBar: ProgressBar
     private val tracksInteractor = Creator.provideTrackInteractor()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d("SearchActivity", "onCreate started")
         setContentView(R.layout.activity_search)
         enableEdgeToEdge()
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.search_activity)) { v, insets ->
@@ -96,10 +83,6 @@ class SearchActivity : AppCompatActivity() {
         clearHistoryBtn = findViewById(R.id.cleanHistory)
         progressLayout = findViewById(R.id.progress)
         progressBar = findViewById(R.id.progressBar)
-
-        //sharedPreferences = getSharedPreferences(SearchHistory.SEARCH_HISTORY_PREF, MODE_PRIVATE)
-        //searchHistory = SearchHistory(sharedPreferences)
-        //sharedPreferences = getSharedPreferences()
 
         searchBack.setOnClickListener { finish() }
 
@@ -244,7 +227,6 @@ class SearchActivity : AppCompatActivity() {
 
     }
 
-
     private fun searchTrack(searchValue: String){
         showProgressBar()
         tracksInteractor.searchTracks(searchValue, object:TracksInteractor.TracksConsumer{
@@ -267,30 +249,6 @@ class SearchActivity : AppCompatActivity() {
                 }
             }
         })
-//        iTunesSearch.search(searchValue).enqueue(object : Callback<SearchResponse> {
-//            override fun onResponse (call: Call<SearchResponse>, response: Response<SearchResponse>) {
-//
-//                if (response.isSuccessful) {
-//                    val responseValue = response.body()?.results ?: emptyList()
-//                    if (responseValue.isNotEmpty()){
-//                        trackList.addAll(responseValue)
-//                        errorHandle(RequestState.Success)
-//                    } else {
-//                        errorHandle(RequestState.NotFound)
-//                    }
-//                } else {
-//                    errorHandle(RequestState.NotConnected)
-//                }
-//            }
-//
-//            override fun onFailure(
-//                call: Call<SearchResponse?>,
-//                t: Throwable
-//            ) {
-//                hideProgressBar()
-//                errorHandle(RequestState.NotConnected)
-//            }
-//        })
     }
 
     private fun updateSearchHistory(){
@@ -316,6 +274,7 @@ class SearchActivity : AppCompatActivity() {
         }
     }
     private fun errorHandle(status: RequestState){
+        if (isFinishing || isDestroyed) return
         hideProgressBar()
         when(status){
             RequestState.Success ->{

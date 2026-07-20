@@ -17,12 +17,12 @@
             android:name=".presentation.PlayerActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.tracks.SearchActivity"
+            android:name=".presentation.SearchActivity"
             android:exported="false" />
         <activity
             android:name=".presentation.MediaActivity"
             android:exported="false" />
-        <activity android:name=".ui.settings.activity.SettingsActivity"
+        <activity android:name=".presentation.SettingsActivity"
             android:exported="false"/>
         <activity
             android:name=".presentation.MainActivity"

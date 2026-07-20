@@ -1,15 +1,10 @@
 package com.practicum.project.playlistmaker.data
 
-import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatDelegate
-import com.practicum.project.playlistmaker.data.App.Companion.SAVED_THEME_STATE
-import com.practicum.project.playlistmaker.data.App.Companion.THEME_VALUE_KEY
 import com.practicum.project.playlistmaker.domain.api.SettingsRepository
-private val darkThemeEnabled: Boolean = false
 class SettingsRepositoryImpl(private val sharedPreferences: SharedPreferences): SettingsRepository {
     override fun switchTheme(darkThemeEnabled: Boolean) {
-        //val darkTheme = darkThemeEnabled
         AppCompatDelegate.setDefaultNightMode(
             if (darkThemeEnabled){
                 AppCompatDelegate.MODE_NIGHT_YES
@@ -24,5 +19,9 @@ class SettingsRepositoryImpl(private val sharedPreferences: SharedPreferences): 
 
     override fun getTheme(): Boolean {
         return sharedPreferences.getBoolean(THEME_VALUE_KEY,false)
+    }
+    companion object{
+        const val SAVED_THEME_STATE = "savedThemeValue"
+        const val THEME_VALUE_KEY = "false"
     }
 }
