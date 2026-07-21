@@ -1,7 +1,8 @@
-package com.practicum.project.playlistmaker
+package com.practicum.project.playlistmaker.presentation
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.practicum.project.playlistmaker.domain.models.Track
 
 class SearchAdapter(
     private var searchResults: MutableList<Track>,

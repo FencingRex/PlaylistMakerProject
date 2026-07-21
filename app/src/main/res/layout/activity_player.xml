@@ -136,19 +136,7 @@
             app:layout_constraintRight_toLeftOf="@id/favoriteButton"
             app:layout_constraintBottom_toTopOf="@id/trackDuration"
             />
-        <!--<ImageView
-            android:id="@+id/playButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:focusable="true"
-            style="@style/playerMainScreen"
-            android:background="?attr/selectableItemBackgroundBorderless"
 
-            app:layout_constraintTop_toBottomOf="@+id/artistName"
-            app:layout_constraintLeft_toRightOf="@id/addButton"
-            app:layout_constraintRight_toLeftOf="@id/favoriteButton"
-            app:layout_constraintBottom_toTopOf="@id/trackDuration" />-->
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
