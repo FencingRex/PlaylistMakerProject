@@ -24,6 +24,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.practicum.project.playlistmaker.R
@@ -35,27 +36,14 @@ import com.practicum.project.playlistmaker.player.ui.PlayerActivity
 
 class SearchActivity : AppCompatActivity() {
     private lateinit var searchRequest: EditText
-    private lateinit var clearBtn: ImageView
-    private lateinit var refreshBtn: Button
     private var searchQuery: String = ""
     private lateinit var recyclerView: RecyclerView
     private lateinit var historyRecyclerView : RecyclerView
-    private lateinit var placeholderErrorText: TextView
-    private lateinit var placeholderErrorImage: ImageView
-    private lateinit var placeholderConnectionText: TextView
-    private lateinit var placeholderDownloadText: TextView
-    private lateinit var placeholderConnectionImage: ImageView
-    private lateinit var placeholderLayoutError: LinearLayout
     private lateinit var adapter: SearchAdapter
     private val trackList: MutableList<Track> = mutableListOf()
-    private lateinit var historyLabel: TextView
-    private lateinit var clearHistoryBtn: Button
     private lateinit var historyAdapter: SearchAdapter
-    private lateinit var historyLayout: LinearLayout
     private var isClickAllowed = true
     private val handler = Handler(Looper.getMainLooper())
-    private lateinit var progressLayout: FrameLayout
-    private lateinit var progressBar: ProgressBar
     private lateinit var viewModel: SearchViewModel
     private lateinit var binding: ActivitySearchBinding
     private val tracksInteractor = Creator.provideTrackInteractor()
@@ -71,60 +59,48 @@ class SearchActivity : AppCompatActivity() {
         }
         val searchBack = findViewById<Toolbar>(R.id.toolbar)
 
-        searchRequest = findViewById(R.id.searchInputText)
-        clearBtn = findViewById(R.id.clearIcon)
-        refreshBtn = findViewById(R.id.refreshButton)
-        placeholderLayoutError = findViewById(R.id.layoutErrorPlaceholder)
-        placeholderErrorImage = findViewById(R.id.placeholderNotFoundImage)
-        placeholderErrorText = findViewById(R.id.placeholderNotFoundText)
-        placeholderConnectionImage = findViewById(R.id.placeholderConnectionImage)
-        placeholderConnectionText = findViewById(R.id.placeholderConnectionText)
-        placeholderDownloadText = findViewById(R.id.placeholderDownloadText)
-        historyLayout = findViewById(R.id.history)
-        historyLabel = findViewById(R.id.historyHeader)
-        clearHistoryBtn = findViewById(R.id.cleanHistory)
-        progressLayout = findViewById(R.id.progress)
-        progressBar = findViewById(R.id.progressBar)
+        viewModel = ViewModelProvider(this, SearchViewModel.getViewModelFactory())[SearchViewModel::class.java]
 
+        searchRequest = findViewById(R.id.searchInputText)
         searchBack.setOnClickListener { finish() }
 
-        progressLayout.visibility = View.GONE
-        progressBar.visibility = View.GONE
+        binding.progress.visibility = View.GONE
+        binding.progressBar.visibility = View.GONE
 
-        clearHistoryBtn.setOnClickListener {
+        binding.cleanHistory.setOnClickListener {
             tracksInteractor.clearHistory()
             updateSearchHistory()
         }
 
-        clearBtn.setOnClickListener {
+        binding.clearIcon.setOnClickListener {
             searchRequest.setText("")
             trackList.clear()
             adapter.notifyDataSetChanged()
 
             updateSearchHistory()
             if(tracksInteractor.isNotEmpty()) {
-                historyLabel.visibility = View.VISIBLE
-                historyLayout.visibility = View.VISIBLE
-                clearHistoryBtn.visibility = View.VISIBLE
+                binding.historyHeader.visibility = View.VISIBLE
+                binding.history.visibility = View.VISIBLE
+                binding.cleanHistory.visibility = View.VISIBLE
             }
             recyclerView.visibility = View.GONE
-            placeholderLayoutError.visibility = View.GONE
+            binding.layoutErrorPlaceholder.visibility = View.GONE
 
             val inputMethodManager =
                 getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
-            inputMethodManager?.hideSoftInputFromWindow(clearBtn.windowToken, 0)
+            inputMethodManager?.hideSoftInputFromWindow(binding.clearIcon.windowToken, 0)
         }
 
         searchRequest.setOnFocusChangeListener{ _, hasFocus ->
             if (hasFocus && searchRequest.text.isEmpty() && tracksInteractor.isNotEmpty()){
                 updateSearchHistory()
-                historyLabel.visibility = View.VISIBLE
-                historyLayout.visibility = View.VISIBLE
-                clearHistoryBtn.visibility = View.VISIBLE
+                binding.historyHeader.visibility = View.VISIBLE
+                binding.history.visibility = View.VISIBLE
+                binding.cleanHistory.visibility = View.VISIBLE
             } else {
-                historyLabel.visibility = View.GONE
-                historyLayout.visibility = View.GONE
-                clearHistoryBtn.visibility = View.GONE
+                binding.historyHeader.visibility = View.GONE
+                binding.history.visibility = View.GONE
+                binding.cleanHistory.visibility = View.GONE
             }
         }
         setRecyclerView()
@@ -137,21 +113,21 @@ class SearchActivity : AppCompatActivity() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                clearBtn.isVisible = !s.isNullOrEmpty()
+                binding.clearIcon.isVisible = !s.isNullOrEmpty()
                 searchDebounce()
                 if (s.isNullOrEmpty()){
                     updateSearchHistory()
                     handler.removeCallbacks(searchRunnable)
                     recyclerView.visibility = View.GONE
-                    placeholderLayoutError.visibility = View.GONE
-                    progressLayout.visibility = View.VISIBLE
-                    progressBar.visibility = View.VISIBLE
+                    binding.layoutErrorPlaceholder.visibility = View.GONE
+                    binding.progress.visibility = View.VISIBLE
+                    binding.progressBar.visibility = View.VISIBLE
                 } else{
-                    historyLabel.visibility = View.GONE
-                    historyLayout.visibility = View.GONE
-                    clearHistoryBtn.visibility = View.GONE
-                    progressLayout.visibility = View.GONE
-                    progressBar.visibility = View.GONE
+                    binding.historyHeader.visibility = View.GONE
+                    binding.history.visibility = View.GONE
+                    binding.cleanHistory.visibility = View.GONE
+                    binding.progress.visibility = View.GONE
+                    binding.progressBar.visibility = View.GONE
                 }
             }
 
@@ -176,7 +152,7 @@ class SearchActivity : AppCompatActivity() {
                 }
                 false
             }
-        refreshBtn.setOnClickListener {
+        binding.refreshButton.setOnClickListener {
             searchTrack(searchRequest.text.toString())
         }
 
@@ -193,7 +169,6 @@ class SearchActivity : AppCompatActivity() {
         searchQuery = savedInstanceState.getString("savedSearchReq", "")
         searchRequest.setText(searchQuery)
     }
-
     private fun setRecyclerView(){
         recyclerView = findViewById(R.id.searchResults)
         historyRecyclerView = findViewById(R.id.searchedTracks)
@@ -202,9 +177,6 @@ class SearchActivity : AppCompatActivity() {
         adapter = SearchAdapter(trackList) {
             if (clickDebounce()) {
                 tracksInteractor.addTrackToHistory(it)
-
-                //searchHistory.addTrackToHistory(it)
-
                 val trackIntent =
                     Intent(this, PlayerActivity::class.java).apply { putExtra("Track", (it)) }
                 startActivity(trackIntent)
@@ -213,22 +185,18 @@ class SearchActivity : AppCompatActivity() {
         historyAdapter = SearchAdapter(mutableListOf()) {
             if (clickDebounce()) {
                 tracksInteractor.addTrackToHistory(it)
-                //searchHistory.addTrackToHistory(it)
                 val trackIntent =
                     Intent(this, PlayerActivity::class.java).apply { putExtra("Track", (it)) }
                 startActivity(trackIntent)
             }
         }
-
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
         recyclerView.setHasFixedSize(true)
 
         historyRecyclerView.layoutManager = LinearLayoutManager(this)
         historyRecyclerView.adapter = historyAdapter
-
     }
-
     private fun searchTrack(searchValue: String){
         showProgressBar()
         tracksInteractor.searchTracks(searchValue, object: TracksInteractor.TracksConsumer{
@@ -252,7 +220,6 @@ class SearchActivity : AppCompatActivity() {
             }
         })
     }
-
     private fun updateSearchHistory(){
         val historyTrackList = tracksInteractor.getTrackFromHistory()
 
@@ -260,17 +227,17 @@ class SearchActivity : AppCompatActivity() {
             historyAdapter.updateList(historyTrackList)
 
             recyclerView.visibility = View.GONE
-            placeholderLayoutError.visibility = View.GONE
+            binding.layoutErrorPlaceholder.visibility = View.GONE
             hideProgressBar()
 
-            historyLayout.visibility = View.VISIBLE
-            clearHistoryBtn.visibility = View.VISIBLE
-            historyLabel.visibility = View.VISIBLE
+            binding.history.visibility = View.VISIBLE
+            binding.cleanHistory.visibility = View.VISIBLE
+            binding.history.visibility = View.VISIBLE
             historyRecyclerView.visibility = View.VISIBLE
         } else {
-            historyLayout.visibility = View.GONE
-            clearHistoryBtn.visibility = View.GONE
-            historyLabel.visibility = View.GONE
+            binding.history.visibility = View.GONE
+            binding.cleanHistory.visibility = View.GONE
+            binding.history.visibility = View.GONE
             historyRecyclerView.visibility = View.GONE
             hideProgressBar()
         }
@@ -281,34 +248,33 @@ class SearchActivity : AppCompatActivity() {
         when(status){
             RequestState.Success ->{
                 recyclerView.visibility = View.VISIBLE
-                placeholderLayoutError.visibility = View.GONE
+                binding.layoutErrorPlaceholder.visibility = View.GONE
             }
             RequestState.NotFound ->{
-                placeholderLayoutError.visibility = View.VISIBLE
+                binding.layoutErrorPlaceholder.visibility = View.VISIBLE
                 recyclerView.visibility = View.GONE
-                refreshBtn.visibility = View.GONE
-                placeholderConnectionImage.visibility = View.GONE
-                placeholderConnectionText.visibility = View.GONE
-                placeholderDownloadText.visibility = View.GONE
+                binding.refreshButton.visibility = View.GONE
+                binding.placeholderConnectionImage.visibility = View.GONE
+                binding.placeholderConnectionText.visibility = View.GONE
+                binding.placeholderDownloadText.visibility = View.GONE
 
-                placeholderErrorImage.visibility = View.VISIBLE
-                placeholderErrorText.visibility = View.VISIBLE
+                binding.placeholderNotFoundText.visibility = View.VISIBLE
+                binding.placeholderNotFoundImage.visibility = View.VISIBLE
             }
             RequestState.NotConnected ->{
                 recyclerView.visibility = View.GONE
-                placeholderErrorImage.visibility = View.GONE
-                placeholderErrorText.visibility = View.GONE
-                placeholderLayoutError.visibility = View.VISIBLE
-                placeholderConnectionImage.visibility = View.VISIBLE
-                placeholderConnectionText.visibility = View.VISIBLE
-                placeholderDownloadText.visibility = View.VISIBLE
-                refreshBtn.visibility = View.VISIBLE
+                binding.placeholderNotFoundImage.visibility = View.GONE
+                binding.placeholderNotFoundText.visibility = View.GONE
+                binding.layoutErrorPlaceholder.visibility = View.VISIBLE
+                binding.placeholderConnectionImage.visibility = View.VISIBLE
+                binding.placeholderConnectionText.visibility = View.VISIBLE
+                binding.placeholderDownloadText.visibility = View.VISIBLE
+                binding.refreshButton.visibility = View.VISIBLE
             }
             RequestState.Empty ->{
                 updateSearchHistory()
             }
         }
-
     }
     private fun clickDebounce(): Boolean{
         val currentClick = isClickAllowed
@@ -324,16 +290,16 @@ class SearchActivity : AppCompatActivity() {
         handler.postDelayed(searchRunnable,SEARCH_DEBOUNCE_DELAY)
     }
     private fun showProgressBar(){
-        progressLayout.visibility = View.VISIBLE
-        progressBar.visibility = View.VISIBLE
+        binding.progress.visibility = View.VISIBLE
+        binding.progressBar.visibility = View.VISIBLE
 
         recyclerView.visibility = View.GONE
-        placeholderLayoutError.visibility = View.GONE
-        historyLayout.visibility = View.GONE
+        binding.layoutErrorPlaceholder.visibility = View.GONE
+        binding.history.visibility = View.GONE
     }
     private fun hideProgressBar(){
-        progressLayout.visibility = View.GONE
-        progressBar.visibility = View.GONE
+        binding.progress.visibility = View.GONE
+        binding.progressBar.visibility = View.GONE
     }
 
     override fun onDestroy() {
