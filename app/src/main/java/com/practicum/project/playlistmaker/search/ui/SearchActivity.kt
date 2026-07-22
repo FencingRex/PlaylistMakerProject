@@ -28,6 +28,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.practicum.project.playlistmaker.R
 import com.practicum.project.playlistmaker.creator.Creator
+import com.practicum.project.playlistmaker.databinding.ActivitySearchBinding
 import com.practicum.project.playlistmaker.search.domain.TracksInteractor
 import com.practicum.project.playlistmaker.search.domain.models.Track
 import com.practicum.project.playlistmaker.player.ui.PlayerActivity
@@ -51,19 +52,19 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var clearHistoryBtn: Button
     private lateinit var historyAdapter: SearchAdapter
     private lateinit var historyLayout: LinearLayout
-    private lateinit var sharedPreferences : SharedPreferences
-
     private var isClickAllowed = true
     private val handler = Handler(Looper.getMainLooper())
     private lateinit var progressLayout: FrameLayout
     private lateinit var progressBar: ProgressBar
+    private lateinit var viewModel: SearchViewModel
+    private lateinit var binding: ActivitySearchBinding
     private val tracksInteractor = Creator.provideTrackInteractor()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d("SearchActivity", "onCreate started")
-        setContentView(R.layout.activity_search)
+        binding = ActivitySearchBinding.inflate(layoutInflater)
+        setContentView(binding.root)//R.layout.activity_search)
         enableEdgeToEdge()
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.search_activity)) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets

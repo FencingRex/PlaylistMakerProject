@@ -1,65 +1,53 @@
 package com.practicum.project.playlistmaker.settings.ui
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import com.google.android.material.switchmaterial.SwitchMaterial
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.ViewModelProvider
 import com.practicum.project.playlistmaker.R
-import com.practicum.project.playlistmaker.creator.Creator
-import com.practicum.project.playlistmaker.settings.domain.SettingsInteractor
+import com.practicum.project.playlistmaker.databinding.ActivitySettingsBinding
+
 
 class SettingsActivity : AppCompatActivity() {
-    private lateinit var settingsInteractor: SettingsInteractor
+    private lateinit var viewModel: SettingsViewModel
+    private lateinit var binding: ActivitySettingsBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_settings)
+        binding = ActivitySettingsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root){
+            v, insets ->
+            val systemBars= insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left,systemBars.top,systemBars.right,systemBars.bottom)
+            insets
+        }
 
         val backBtn = findViewById<Toolbar>(R.id.toolbar)
-        val shareBtn = findViewById<TextView>(R.id.shareBtn)
-        val supportBtn = findViewById<TextView>(R.id.supportBtn)
-        val userAgreementBtn = findViewById<TextView>(R.id.userAgreemBtn)
-        val themeSwitcher = findViewById<SwitchMaterial>(R.id.themeSwitcher)
 
         backBtn.setOnClickListener { finish() }
 
-        settingsInteractor = Creator.provideSettingsInteractor()
-        themeSwitcher.isChecked = settingsInteractor.getTheme()
-        themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
-            settingsInteractor.switchTheme(checked) }
+        viewModel = ViewModelProvider(this, SettingsViewModel.getViewModelFactory())[SettingsViewModel::class.java]
 
-        shareBtn.setOnClickListener {
-            val shareIntent = Intent(Intent.ACTION_SEND)
-            shareIntent.type = "text/plain"
-            val url = getString(R.string.shareMsg)
-            shareIntent.putExtra(Intent.EXTRA_TEXT,url)
-            val chooserMsg = getString(R.string.chooserMsg)
-            startActivity(Intent.createChooser(shareIntent,  chooserMsg))
+        viewModel.getThemeData().observe(this){
+            isDarkThemeEnabled -> binding.themeSwitcher.isChecked = isDarkThemeEnabled
+        }
+        binding.themeSwitcher.setOnCheckedChangeListener { switcher, checked ->viewModel.switchTheme(checked)  }
+
+        binding.shareBtn.setOnClickListener {
+           startActivity(viewModel.shareApp())
         }
 
-        supportBtn.setOnClickListener {
-            val supportIntent = Intent(Intent.ACTION_SENDTO).apply {
-                val mail = getString(R.string.supportMailTo)
-                val subject = getString(R.string.supportMailSubject)
-                val message =  getString(R.string.supportMailBody)
-
-                val msg = "mailto:$mail" +
-                        "?subject=${Uri.encode(subject)}" +
-                        "?body=${Uri.encode(message)}"
-                data = Uri.parse(msg)
-                putExtra(Intent.EXTRA_SUBJECT,subject)
-                putExtra(Intent.EXTRA_TEXT, message)
-
-            }
-            startActivity(Intent.createChooser(supportIntent,getString(R.string.support)))
+        binding.supportBtn.setOnClickListener {
+            startActivity(viewModel.openSupport())
         }
 
-        userAgreementBtn.setOnClickListener {
-            val url = Uri.parse(getString(R.string.userAgreemLink))
-            val userAgreementIntent = Intent(Intent.ACTION_VIEW, url)
-                startActivity(userAgreementIntent)
+        binding.userAgreemBtn.setOnClickListener {
+            startActivity(viewModel.openTermsLink())
+
         }
     }
 }

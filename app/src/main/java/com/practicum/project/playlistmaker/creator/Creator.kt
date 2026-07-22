@@ -16,6 +16,12 @@ import com.practicum.project.playlistmaker.search.domain.TracksRepository
 import com.practicum.project.playlistmaker.player.domain.PlayerInteractorImpl
 import com.practicum.project.playlistmaker.settings.domain.SettingsInteractorImpl
 import com.practicum.project.playlistmaker.search.domain.TracksInteractorImpl
+import com.practicum.project.playlistmaker.sharing.ExternalNavigator
+import com.practicum.project.playlistmaker.sharing.data.ExternalNavigatorImpl
+import com.practicum.project.playlistmaker.sharing.data.SharingRepositoryImpl
+import com.practicum.project.playlistmaker.sharing.domain.SharingInteractor
+import com.practicum.project.playlistmaker.sharing.domain.SharingInteractorImpl
+import com.practicum.project.playlistmaker.sharing.domain.SharingRepository
 
 object Creator {
     private lateinit var application: Application
@@ -53,5 +59,14 @@ object Creator {
     }
     fun providePlayerInteractor(): PlayerInteractor {
         return PlayerInteractorImpl(getPlayerRepository())
+    }
+    private fun getExternalNavigator(): ExternalNavigator{
+        return ExternalNavigatorImpl()
+    }
+    private fun getSharingRepository(): SharingRepository{
+        return SharingRepositoryImpl(application)
+    }
+    fun provideSharingInteractor(): SharingInteractor{
+        return SharingInteractorImpl(getExternalNavigator(), getSharingRepository())
     }
 }
