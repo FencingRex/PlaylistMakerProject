@@ -2,11 +2,9 @@ package com.practicum.project.playlistmaker.settings.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
-import com.practicum.project.playlistmaker.R
 import com.practicum.project.playlistmaker.databinding.ActivitySettingsBinding
 
 
@@ -26,9 +24,7 @@ class SettingsActivity : AppCompatActivity() {
             insets
         }
 
-        val backBtn = findViewById<Toolbar>(R.id.toolbar)
-
-        backBtn.setOnClickListener { finish() }
+        binding.toolbar.setOnClickListener { finish() }
 
         viewModel = ViewModelProvider(this, SettingsViewModel.getViewModelFactory())[SettingsViewModel::class.java]
 

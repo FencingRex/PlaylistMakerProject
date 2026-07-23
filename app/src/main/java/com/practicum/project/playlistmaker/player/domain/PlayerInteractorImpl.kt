@@ -21,8 +21,8 @@ class PlayerInteractorImpl (private  val repository: PlayerRepository): PlayerIn
         repository.releasePlayer()
     }
 
-    override fun getCurrentPosition(): Int {
-        return repository.getCurrentPosition()
+    override fun getCurrentPosition(): String {
+        return formatTime(repository.getCurrentPosition().toLong())
     }
     override fun formatTime(milliseconds: Long): String {
         val seconds = milliseconds / 1000

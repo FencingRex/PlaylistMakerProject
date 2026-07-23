@@ -15,7 +15,7 @@ interface PlayerInteractor {
     )
 
     fun releasePlayer()
-    fun getCurrentPosition(): Int
+    fun getCurrentPosition(): String
     fun formatTime(milliseconds: Long): String
     fun isPlaying(): Boolean
 

@@ -1,33 +1,21 @@
 package com.practicum.project.playlistmaker.search.ui
 
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
-import android.widget.EditText
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.practicum.project.playlistmaker.R
 import com.practicum.project.playlistmaker.creator.Creator
 import com.practicum.project.playlistmaker.databinding.ActivitySearchBinding
 import com.practicum.project.playlistmaker.search.domain.TracksInteractor
@@ -35,10 +23,7 @@ import com.practicum.project.playlistmaker.search.domain.models.Track
 import com.practicum.project.playlistmaker.player.ui.PlayerActivity
 
 class SearchActivity : AppCompatActivity() {
-    private lateinit var searchRequest: EditText
     private var searchQuery: String = ""
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var historyRecyclerView : RecyclerView
     private lateinit var adapter: SearchAdapter
     private val trackList: MutableList<Track> = mutableListOf()
     private lateinit var historyAdapter: SearchAdapter
@@ -50,19 +35,17 @@ class SearchActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySearchBinding.inflate(layoutInflater)
-        setContentView(binding.root)//R.layout.activity_search)
+        setContentView(binding.root)
         enableEdgeToEdge()
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        val searchBack = findViewById<Toolbar>(R.id.toolbar)
 
         viewModel = ViewModelProvider(this, SearchViewModel.getViewModelFactory())[SearchViewModel::class.java]
 
-        searchRequest = findViewById(R.id.searchInputText)
-        searchBack.setOnClickListener { finish() }
+        binding.toolbar.setOnClickListener { finish() }
 
         binding.progress.visibility = View.GONE
         binding.progressBar.visibility = View.GONE
@@ -73,7 +56,7 @@ class SearchActivity : AppCompatActivity() {
         }
 
         binding.clearIcon.setOnClickListener {
-            searchRequest.setText("")
+            binding.searchInputText.setText("")
             trackList.clear()
             adapter.notifyDataSetChanged()
 
@@ -83,7 +66,7 @@ class SearchActivity : AppCompatActivity() {
                 binding.history.visibility = View.VISIBLE
                 binding.cleanHistory.visibility = View.VISIBLE
             }
-            recyclerView.visibility = View.GONE
+            binding.searchResults.visibility = View.GONE
             binding.layoutErrorPlaceholder.visibility = View.GONE
 
             val inputMethodManager =
@@ -91,8 +74,8 @@ class SearchActivity : AppCompatActivity() {
             inputMethodManager?.hideSoftInputFromWindow(binding.clearIcon.windowToken, 0)
         }
 
-        searchRequest.setOnFocusChangeListener{ _, hasFocus ->
-            if (hasFocus && searchRequest.text.isEmpty() && tracksInteractor.isNotEmpty()){
+        binding.searchInputText.setOnFocusChangeListener{ _, hasFocus ->
+            if (hasFocus && binding.searchInputText.text.isEmpty() && tracksInteractor.isNotEmpty()){
                 updateSearchHistory()
                 binding.historyHeader.visibility = View.VISIBLE
                 binding.history.visibility = View.VISIBLE
@@ -105,7 +88,7 @@ class SearchActivity : AppCompatActivity() {
         }
         setRecyclerView()
 
-        if (searchRequest.text.isEmpty()){
+        if (binding.searchInputText.text.isEmpty()){
             updateSearchHistory()
         }
 
@@ -118,7 +101,7 @@ class SearchActivity : AppCompatActivity() {
                 if (s.isNullOrEmpty()){
                     updateSearchHistory()
                     handler.removeCallbacks(searchRunnable)
-                    recyclerView.visibility = View.GONE
+                    binding.searchResults.visibility = View.GONE
                     binding.layoutErrorPlaceholder.visibility = View.GONE
                     binding.progress.visibility = View.VISIBLE
                     binding.progressBar.visibility = View.VISIBLE
@@ -140,39 +123,36 @@ class SearchActivity : AppCompatActivity() {
 
             }
         }
-        searchRequest.addTextChangedListener(simpleTextWatcher)
+        binding.searchInputText.addTextChangedListener(simpleTextWatcher)
 
-        searchRequest.setOnEditorActionListener { _, actionId, _ ->
+        binding.searchInputText.setOnEditorActionListener { _, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    if (searchRequest.text.isNotEmpty()){
+                    if (binding.searchInputText.text.isNotEmpty()){
                         searchDebounce()
-                        searchTrack(searchRequest.text.toString())
+                        searchTrack(binding.searchInputText.text.toString())
                         setRecyclerView()
                     }
                 }
                 false
             }
         binding.refreshButton.setOnClickListener {
-            searchTrack(searchRequest.text.toString())
+            searchTrack(binding.searchInputText.text.toString())
         }
 
     }
-    private val searchRunnable = Runnable {searchTrack(searchRequest.text.toString())}
+    private val searchRunnable = Runnable {searchTrack(binding.searchInputText.text.toString())}
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString("savedSearchReq", searchRequest.getText().toString())
+        outState.putString("savedSearchReq", binding.searchInputText.getText().toString())
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         searchQuery = savedInstanceState.getString("savedSearchReq", "")
-        searchRequest.setText(searchQuery)
+        binding.searchInputText.setText(searchQuery)
     }
     private fun setRecyclerView(){
-        recyclerView = findViewById(R.id.searchResults)
-        historyRecyclerView = findViewById(R.id.searchedTracks)
-
 
         adapter = SearchAdapter(trackList) {
             if (clickDebounce()) {
@@ -190,12 +170,12 @@ class SearchActivity : AppCompatActivity() {
                 startActivity(trackIntent)
             }
         }
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = adapter
-        recyclerView.setHasFixedSize(true)
+        binding.searchResults.layoutManager = LinearLayoutManager(this)
+        binding.searchResults.adapter = adapter
+        binding.searchResults.setHasFixedSize(true)
 
-        historyRecyclerView.layoutManager = LinearLayoutManager(this)
-        historyRecyclerView.adapter = historyAdapter
+        binding.searchedTracks.layoutManager = LinearLayoutManager(this)
+        binding.searchedTracks.adapter = historyAdapter
     }
     private fun searchTrack(searchValue: String){
         showProgressBar()
@@ -223,22 +203,22 @@ class SearchActivity : AppCompatActivity() {
     private fun updateSearchHistory(){
         val historyTrackList = tracksInteractor.getTrackFromHistory()
 
-        if (historyTrackList.isNotEmpty() && searchRequest.text.isEmpty() && searchRequest.hasFocus()){
+        if (historyTrackList.isNotEmpty() && binding.searchInputText.text.isEmpty() && binding.searchInputText.hasFocus()){
             historyAdapter.updateList(historyTrackList)
 
-            recyclerView.visibility = View.GONE
+            binding.searchResults.visibility = View.GONE
             binding.layoutErrorPlaceholder.visibility = View.GONE
             hideProgressBar()
 
             binding.history.visibility = View.VISIBLE
             binding.cleanHistory.visibility = View.VISIBLE
             binding.history.visibility = View.VISIBLE
-            historyRecyclerView.visibility = View.VISIBLE
+            binding.searchedTracks.visibility = View.VISIBLE
         } else {
             binding.history.visibility = View.GONE
             binding.cleanHistory.visibility = View.GONE
             binding.history.visibility = View.GONE
-            historyRecyclerView.visibility = View.GONE
+            binding.searchedTracks.visibility = View.GONE
             hideProgressBar()
         }
     }
@@ -247,12 +227,12 @@ class SearchActivity : AppCompatActivity() {
         hideProgressBar()
         when(status){
             RequestState.Success ->{
-                recyclerView.visibility = View.VISIBLE
+                binding.searchResults.visibility = View.VISIBLE
                 binding.layoutErrorPlaceholder.visibility = View.GONE
             }
             RequestState.NotFound ->{
                 binding.layoutErrorPlaceholder.visibility = View.VISIBLE
-                recyclerView.visibility = View.GONE
+                binding.searchResults.visibility = View.GONE
                 binding.refreshButton.visibility = View.GONE
                 binding.placeholderConnectionImage.visibility = View.GONE
                 binding.placeholderConnectionText.visibility = View.GONE
@@ -262,7 +242,7 @@ class SearchActivity : AppCompatActivity() {
                 binding.placeholderNotFoundImage.visibility = View.VISIBLE
             }
             RequestState.NotConnected ->{
-                recyclerView.visibility = View.GONE
+                binding.searchResults.visibility = View.GONE
                 binding.placeholderNotFoundImage.visibility = View.GONE
                 binding.placeholderNotFoundText.visibility = View.GONE
                 binding.layoutErrorPlaceholder.visibility = View.VISIBLE
@@ -293,7 +273,7 @@ class SearchActivity : AppCompatActivity() {
         binding.progress.visibility = View.VISIBLE
         binding.progressBar.visibility = View.VISIBLE
 
-        recyclerView.visibility = View.GONE
+        binding.searchResults.visibility = View.GONE
         binding.layoutErrorPlaceholder.visibility = View.GONE
         binding.history.visibility = View.GONE
     }
