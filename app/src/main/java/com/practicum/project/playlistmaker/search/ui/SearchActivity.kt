@@ -21,13 +21,13 @@ import com.practicum.project.playlistmaker.databinding.ActivitySearchBinding
 import com.practicum.project.playlistmaker.search.domain.TracksInteractor
 import com.practicum.project.playlistmaker.search.domain.models.Track
 import com.practicum.project.playlistmaker.player.ui.PlayerActivity
+import com.practicum.project.playlistmaker.search.model.RequestState
 
 class SearchActivity : AppCompatActivity() {
     private var searchQuery: String = ""
     private lateinit var adapter: SearchAdapter
     private val trackList: MutableList<Track> = mutableListOf()
     private lateinit var historyAdapter: SearchAdapter
-    private var isClickAllowed = true
     private val handler = Handler(Looper.getMainLooper())
     private lateinit var viewModel: SearchViewModel
     private lateinit var binding: ActivitySearchBinding
@@ -97,7 +97,7 @@ class SearchActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 binding.clearIcon.isVisible = !s.isNullOrEmpty()
-                searchDebounce()
+                viewModel.searchDebounce()
                 if (s.isNullOrEmpty()){
                     updateSearchHistory()
                     handler.removeCallbacks(searchRunnable)
@@ -115,7 +115,7 @@ class SearchActivity : AppCompatActivity() {
             }
 
             override fun afterTextChanged(s: Editable?) {
-                searchDebounce()
+                viewModel.searchDebounce()
                 searchQuery = s.toString()
                 if (s.toString().isEmpty()){
                     trackList.clear()
@@ -128,7 +128,7 @@ class SearchActivity : AppCompatActivity() {
         binding.searchInputText.setOnEditorActionListener { _, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     if (binding.searchInputText.text.isNotEmpty()){
-                        searchDebounce()
+                        viewModel.searchDebounce()
                         searchTrack(binding.searchInputText.text.toString())
                         setRecyclerView()
                     }
@@ -155,16 +155,14 @@ class SearchActivity : AppCompatActivity() {
     private fun setRecyclerView(){
 
         adapter = SearchAdapter(trackList) {
-            if (clickDebounce()) {
-                tracksInteractor.addTrackToHistory(it)
+            if (viewModel.clickDebounce(it)) {
                 val trackIntent =
                     Intent(this, PlayerActivity::class.java).apply { putExtra("Track", (it)) }
                 startActivity(trackIntent)
             }
         }
         historyAdapter = SearchAdapter(mutableListOf()) {
-            if (clickDebounce()) {
-                tracksInteractor.addTrackToHistory(it)
+            if (viewModel.clickDebounce(it)) {
                 val trackIntent =
                     Intent(this, PlayerActivity::class.java).apply { putExtra("Track", (it)) }
                 startActivity(trackIntent)
@@ -201,7 +199,7 @@ class SearchActivity : AppCompatActivity() {
         })
     }
     private fun updateSearchHistory(){
-        val historyTrackList = tracksInteractor.getTrackFromHistory()
+        val historyTrackList = viewModel.getHistory()
 
         if (historyTrackList.isNotEmpty() && binding.searchInputText.text.isEmpty() && binding.searchInputText.hasFocus()){
             historyAdapter.updateList(historyTrackList)
@@ -253,21 +251,9 @@ class SearchActivity : AppCompatActivity() {
             }
             RequestState.Empty ->{
                 updateSearchHistory()
-            }
+            } else -> {
+                updateSearchHistory()}
         }
-    }
-    private fun clickDebounce(): Boolean{
-        val currentClick = isClickAllowed
-        if (isClickAllowed){
-            isClickAllowed = false
-            handler.postDelayed({isClickAllowed = true}, CLICK_DEBOUNCE_DELAY)
-        }
-        return currentClick
-    }
-
-    private fun searchDebounce(){
-        handler.removeCallbacks(searchRunnable)
-        handler.postDelayed(searchRunnable,SEARCH_DEBOUNCE_DELAY)
     }
     private fun showProgressBar(){
         binding.progress.visibility = View.VISIBLE
@@ -286,14 +272,5 @@ class SearchActivity : AppCompatActivity() {
         super.onDestroy()
         handler.removeCallbacks(searchRunnable)
     }
-    sealed interface RequestState {
-        data object Empty: RequestState
-        data object Success: RequestState
-        data object NotConnected: RequestState
-        data object NotFound: RequestState
-    }
-    companion object{
-        private const val CLICK_DEBOUNCE_DELAY = 1000L
-        private const val SEARCH_DEBOUNCE_DELAY = 2000L
-    }
+
 }
