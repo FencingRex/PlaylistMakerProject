@@ -67,7 +67,7 @@ class PlayerActivity: AppCompatActivity() {
             render(it)
         }
         viewModel.getCurrentPosition().observe(this) { position ->
-            binding.trackDurationValue.text = position
+            binding.playbackDuration.text = position
         }
     }
     override fun onPause() {
