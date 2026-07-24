@@ -1,71 +1,53 @@
 package com.practicum.project.playlistmaker.search.ui
 
-import android.app.Application
-import android.content.SharedPreferences
 import android.os.Handler
 import android.os.Looper
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.practicum.project.playlistmaker.creator.Creator
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
-import com.practicum.project.playlistmaker.search.data.TrackHistoryRepositoryImpl.Companion.SEARCH_HISTORY_KEY
 import com.practicum.project.playlistmaker.search.domain.TracksInteractor
 import com.practicum.project.playlistmaker.search.domain.models.Track
-import com.practicum.project.playlistmaker.search.model.HistoryState
 import com.practicum.project.playlistmaker.search.model.RequestState
 
-class SearchViewModel(application: Application): AndroidViewModel(application) {
+class SearchViewModel(private val tracksInteractor: TracksInteractor): ViewModel() {
     private var searchRequest: String = ""
     private val handler = Handler(Looper.getMainLooper())
-    private val tracksInteractor = Creator.provideTrackInteractor()
     private val searchRunnable = Runnable {searchTrack(searchRequest)}
-    private val sharedPreferences = SharedPreferences.OnSharedPreferenceChangeListener{
-        _, key ->
-        if (key == SEARCH_HISTORY_KEY){
-            getHistory()
-        }
-    }
+
     private var isClickAllowed = true
     private val requestStateLiveData = MutableLiveData<RequestState>()
-    fun getRequestState(): LiveData<RequestState> = requestStateLiveData
-
-    private val historyStateLiveData = MutableLiveData<HistoryState>()
-    fun getHistoryState(): LiveData<HistoryState> = historyStateLiveData
+    val requestState: LiveData<RequestState> = requestStateLiveData
 
     init {
         getHistory()
     }
-    private fun searchTrack(searchValue: String){
-        if(searchValue.isNotEmpty()) {
-            requestStateLiveData.postValue(RequestState.Loading)
-            val consumer = object : TracksInteractor.TracksConsumer {
-                override fun consume(foundTracks: List<Track>) {
-                    if (foundTracks.isNotEmpty()) {
-                        requestStateLiveData.postValue(RequestState.Success)
-                    } else {
-                        requestStateLiveData.postValue(RequestState.NotFound)
-                    }
-                }
-                override fun onFailure() {
-                    requestStateLiveData.postValue(RequestState.NotConnected)
-                }
-            }
-            tracksInteractor.searchTracks(searchValue, consumer)
+    fun searchTrack(searchValue: String){
+        if(searchValue.isEmpty()) {
+            requestStateLiveData.postValue(RequestState.Empty)
+            return
         }
+        requestStateLiveData.postValue(RequestState.Loading )
+        tracksInteractor.searchTracks(searchValue,object : TracksInteractor.TracksConsumer {
+            override fun consume(foundTracks: List<Track>) {
+                requestStateLiveData.postValue(
+                    if (foundTracks.isNotEmpty()) RequestState.Success(foundTracks)
+                    else RequestState.NotFound
+                )
+            }
+            override fun onFailure() {
+                requestStateLiveData.postValue(RequestState.NotConnected)
+            }
+        })
     }
     private fun addTrackToHistory(track: Track) {
         tracksInteractor.addTrackToHistory(track)
     }
     fun getHistory(): ArrayList<Track>{
         val historyTrackList = tracksInteractor.getTrackFromHistory()
-        historyStateLiveData.postValue(
-            if (historyTrackList.isEmpty()) HistoryState.EmptyHistory else
-                HistoryState.HistoryContent(historyTrackList)
-        )
         return historyTrackList
     }
     fun removeCallback(){
@@ -79,7 +61,6 @@ class SearchViewModel(application: Application): AndroidViewModel(application) {
         handler.removeCallbacks(searchRunnable)
         handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
     }
-
     fun clickDebounce(track: Track): Boolean{
         val currentClick = isClickAllowed
         if (isClickAllowed){
@@ -94,7 +75,7 @@ class SearchViewModel(application: Application): AndroidViewModel(application) {
     companion object{
         fun getViewModelFactory(): ViewModelProvider.Factory = viewModelFactory {
             initializer {
-                SearchViewModel(this[APPLICATION_KEY] as Application)
+                SearchViewModel(tracksInteractor = Creator.provideTrackInteractor())
             }
         }
         private const val CLICK_DEBOUNCE_DELAY = 1000L

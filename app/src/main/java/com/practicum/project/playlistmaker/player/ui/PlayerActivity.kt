@@ -2,8 +2,6 @@ package com.practicum.project.playlistmaker.player.ui
 
 import android.content.Context
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.IntentCompat
@@ -15,6 +13,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.project.playlistmaker.R
 import com.practicum.project.playlistmaker.databinding.ActivityPlayerBinding
 import com.practicum.project.playlistmaker.player.model.PlayerState
+import com.practicum.project.playlistmaker.player.model.PlayerUiState
 import com.practicum.project.playlistmaker.search.domain.models.Track
 class PlayerActivity: AppCompatActivity() {
     private lateinit var binding: ActivityPlayerBinding
@@ -63,11 +62,8 @@ class PlayerActivity: AppCompatActivity() {
             .into(binding.albumCover)
 
         binding.playButton.setOnClickListener { viewModel.playbackControl() }
-        viewModel.getState().observe(this) {
-            render(it)
-        }
-        viewModel.getCurrentPosition().observe(this) { position ->
-            binding.playbackDuration.text = position
+        viewModel.playerUIState.observe(this) { playerUIState ->
+            render(playerUIState)
         }
     }
     override fun onPause() {
@@ -78,8 +74,9 @@ class PlayerActivity: AppCompatActivity() {
         super.onDestroy()
         viewModel.releasePlayer()
     }
-    private fun render(state: PlayerState) {
-        when (state) {
+    private fun render(uiState: PlayerUiState) {
+        when (uiState.status) {
+            PlayerState.STATE_DEFAULT -> {}
             PlayerState.STATE_PREPARED -> {
                 binding.playButton.isEnabled = true
                 binding.playbackDuration?.text = "00:00"
@@ -87,11 +84,12 @@ class PlayerActivity: AppCompatActivity() {
             }
             PlayerState.STATE_PLAYING -> {
                 binding.playButton.setImageResource(R.drawable.ic_button_pause_100)
+                binding.playbackDuration.text = uiState.currentPosition
             }
             PlayerState.STATE_PAUSED -> {
                 binding.playButton.setImageResource(R.drawable.ic_button_play_100)
+                binding.playbackDuration.text = uiState.currentPosition
             }
-        PlayerState.STATE_DEFAULT -> {}
         }
     }
 }

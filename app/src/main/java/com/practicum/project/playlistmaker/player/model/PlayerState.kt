@@ -6,3 +6,7 @@ enum class PlayerState {
     STATE_PLAYING,
     STATE_PAUSED
 }
+data class PlayerUiState(
+    val status: PlayerState = PlayerState.STATE_DEFAULT,
+    val currentPosition: String = "00:00"
+)

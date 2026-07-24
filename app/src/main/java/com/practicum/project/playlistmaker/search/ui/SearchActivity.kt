@@ -16,9 +16,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.practicum.project.playlistmaker.creator.Creator
 import com.practicum.project.playlistmaker.databinding.ActivitySearchBinding
-import com.practicum.project.playlistmaker.search.domain.TracksInteractor
 import com.practicum.project.playlistmaker.search.domain.models.Track
 import com.practicum.project.playlistmaker.player.ui.PlayerActivity
 import com.practicum.project.playlistmaker.search.model.RequestState
@@ -31,7 +29,7 @@ class SearchActivity : AppCompatActivity() {
     private val handler = Handler(Looper.getMainLooper())
     private lateinit var viewModel: SearchViewModel
     private lateinit var binding: ActivitySearchBinding
-    private val tracksInteractor = Creator.provideTrackInteractor()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySearchBinding.inflate(layoutInflater)
@@ -44,6 +42,31 @@ class SearchActivity : AppCompatActivity() {
         }
 
         viewModel = ViewModelProvider(this, SearchViewModel.getViewModelFactory())[SearchViewModel::class.java]
+        viewModel.requestState.observe(this) { state ->
+            when (state) {
+                is RequestState.Loading -> showProgressBar()
+                is RequestState.Success -> {
+                    hideProgressBar()
+                    trackList.clear()
+                    trackList.addAll(state.tracks)
+                    adapter.notifyDataSetChanged()
+                    binding.searchResults.visibility = View.VISIBLE
+                    binding.layoutErrorPlaceholder.visibility = View.GONE
+                }
+                is RequestState.NotFound -> {
+                    hideProgressBar()
+                    showNotFoundPlaceholder()
+                }
+                is RequestState.NotConnected -> {
+                    hideProgressBar()
+                    showNotConnectedPlaceholder()
+                }
+                is RequestState.Empty -> {
+                    hideProgressBar()
+                    updateSearchHistory()
+                }
+            }
+        }
 
         binding.toolbar.setOnClickListener { finish() }
 
@@ -51,7 +74,7 @@ class SearchActivity : AppCompatActivity() {
         binding.progressBar.visibility = View.GONE
 
         binding.cleanHistory.setOnClickListener {
-            tracksInteractor.clearHistory()
+            viewModel.clearHistory()
             updateSearchHistory()
         }
 
@@ -59,9 +82,9 @@ class SearchActivity : AppCompatActivity() {
             binding.searchInputText.setText("")
             trackList.clear()
             adapter.notifyDataSetChanged()
-
+            hideProgressBar()
             updateSearchHistory()
-            if(tracksInteractor.isNotEmpty()) {
+            if(viewModel.getHistory().isNotEmpty()) {
                 binding.historyHeader.visibility = View.VISIBLE
                 binding.history.visibility = View.VISIBLE
                 binding.cleanHistory.visibility = View.VISIBLE
@@ -75,7 +98,7 @@ class SearchActivity : AppCompatActivity() {
         }
 
         binding.searchInputText.setOnFocusChangeListener{ _, hasFocus ->
-            if (hasFocus && binding.searchInputText.text.isEmpty() && tracksInteractor.isNotEmpty()){
+            if (hasFocus && binding.searchInputText.text.isEmpty() && viewModel.getHistory().isNotEmpty()){ //tracksInteractor.isNotEmpty()
                 updateSearchHistory()
                 binding.historyHeader.visibility = View.VISIBLE
                 binding.history.visibility = View.VISIBLE
@@ -97,30 +120,28 @@ class SearchActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 binding.clearIcon.isVisible = !s.isNullOrEmpty()
-                viewModel.searchDebounce()
                 if (s.isNullOrEmpty()){
-                    updateSearchHistory()
                     handler.removeCallbacks(searchRunnable)
+                    updateSearchHistory()
                     binding.searchResults.visibility = View.GONE
                     binding.layoutErrorPlaceholder.visibility = View.GONE
-                    binding.progress.visibility = View.VISIBLE
-                    binding.progressBar.visibility = View.VISIBLE
+                    binding.progress.visibility = View.GONE
+                    binding.progressBar.visibility = View.GONE
                 } else{
                     binding.historyHeader.visibility = View.GONE
                     binding.history.visibility = View.GONE
                     binding.cleanHistory.visibility = View.GONE
                     binding.progress.visibility = View.GONE
                     binding.progressBar.visibility = View.GONE
+                    viewModel.searchDebounce()
                 }
             }
 
             override fun afterTextChanged(s: Editable?) {
-                viewModel.searchDebounce()
                 searchQuery = s.toString()
                 if (s.toString().isEmpty()){
                     trackList.clear()
                 }
-
             }
         }
         binding.searchInputText.addTextChangedListener(simpleTextWatcher)
@@ -130,7 +151,6 @@ class SearchActivity : AppCompatActivity() {
                     if (binding.searchInputText.text.isNotEmpty()){
                         viewModel.searchDebounce()
                         searchTrack(binding.searchInputText.text.toString())
-                        setRecyclerView()
                     }
                 }
                 false
@@ -138,7 +158,6 @@ class SearchActivity : AppCompatActivity() {
         binding.refreshButton.setOnClickListener {
             searchTrack(binding.searchInputText.text.toString())
         }
-
     }
     private val searchRunnable = Runnable {searchTrack(binding.searchInputText.text.toString())}
 
@@ -176,27 +195,7 @@ class SearchActivity : AppCompatActivity() {
         binding.searchedTracks.adapter = historyAdapter
     }
     private fun searchTrack(searchValue: String){
-        showProgressBar()
-        tracksInteractor.searchTracks(searchValue, object: TracksInteractor.TracksConsumer{
-            override fun consume(foundTracks: List<Track>){
-                handler.post{
-                    hideProgressBar()
-                    if (foundTracks.isNotEmpty()){
-                        trackList.addAll(foundTracks)
-                        errorHandle(RequestState.Success)
-                        adapter.updateList(trackList)
-                    } else {
-                        errorHandle(RequestState.NotFound)
-                    }
-                }
-            }
-            override fun onFailure() {
-                handler.post {
-                    hideProgressBar()
-                    errorHandle(RequestState.NotConnected)
-                }
-            }
-        })
+        viewModel.searchTrack(searchValue)
     }
     private fun updateSearchHistory(){
         val historyTrackList = viewModel.getHistory()
@@ -208,52 +207,37 @@ class SearchActivity : AppCompatActivity() {
             binding.layoutErrorPlaceholder.visibility = View.GONE
             hideProgressBar()
 
-            binding.history.visibility = View.VISIBLE
+            binding.historyHeader.visibility = View.VISIBLE
             binding.cleanHistory.visibility = View.VISIBLE
             binding.history.visibility = View.VISIBLE
             binding.searchedTracks.visibility = View.VISIBLE
         } else {
-            binding.history.visibility = View.GONE
+            binding.historyHeader.visibility = View.GONE
             binding.cleanHistory.visibility = View.GONE
             binding.history.visibility = View.GONE
             binding.searchedTracks.visibility = View.GONE
             hideProgressBar()
         }
     }
-    private fun errorHandle(status: RequestState){
-        if (isFinishing || isDestroyed) return
-        hideProgressBar()
-        when(status){
-            RequestState.Success ->{
-                binding.searchResults.visibility = View.VISIBLE
-                binding.layoutErrorPlaceholder.visibility = View.GONE
-            }
-            RequestState.NotFound ->{
-                binding.layoutErrorPlaceholder.visibility = View.VISIBLE
-                binding.searchResults.visibility = View.GONE
-                binding.refreshButton.visibility = View.GONE
-                binding.placeholderConnectionImage.visibility = View.GONE
-                binding.placeholderConnectionText.visibility = View.GONE
-                binding.placeholderDownloadText.visibility = View.GONE
-
-                binding.placeholderNotFoundText.visibility = View.VISIBLE
-                binding.placeholderNotFoundImage.visibility = View.VISIBLE
-            }
-            RequestState.NotConnected ->{
-                binding.searchResults.visibility = View.GONE
-                binding.placeholderNotFoundImage.visibility = View.GONE
-                binding.placeholderNotFoundText.visibility = View.GONE
-                binding.layoutErrorPlaceholder.visibility = View.VISIBLE
-                binding.placeholderConnectionImage.visibility = View.VISIBLE
-                binding.placeholderConnectionText.visibility = View.VISIBLE
-                binding.placeholderDownloadText.visibility = View.VISIBLE
-                binding.refreshButton.visibility = View.VISIBLE
-            }
-            RequestState.Empty ->{
-                updateSearchHistory()
-            } else -> {
-                updateSearchHistory()}
-        }
+    private fun showNotFoundPlaceholder() {
+        binding.layoutErrorPlaceholder.visibility = View.VISIBLE
+        binding.searchResults.visibility = View.GONE
+        binding.refreshButton.visibility = View.GONE
+        binding.placeholderConnectionImage.visibility = View.GONE
+        binding.placeholderConnectionText.visibility = View.GONE
+        binding.placeholderDownloadText.visibility = View.GONE
+        binding.placeholderNotFoundText.visibility = View.VISIBLE
+        binding.placeholderNotFoundImage.visibility = View.VISIBLE
+    }
+    private fun showNotConnectedPlaceholder() {
+        binding.layoutErrorPlaceholder.visibility = View.VISIBLE
+        binding.searchResults.visibility = View.GONE
+        binding.placeholderNotFoundImage.visibility = View.GONE
+        binding.placeholderNotFoundText.visibility = View.GONE
+        binding.placeholderConnectionImage.visibility = View.VISIBLE
+        binding.placeholderConnectionText.visibility = View.VISIBLE
+        binding.placeholderDownloadText.visibility = View.VISIBLE
+        binding.refreshButton.visibility = View.VISIBLE
     }
     private fun showProgressBar(){
         binding.progress.visibility = View.VISIBLE

@@ -2,10 +2,10 @@ package com.practicum.project.playlistmaker.search.model
 
 import com.practicum.project.playlistmaker.search.domain.models.Track
 
-sealed interface RequestState {
-    data object Empty: RequestState
-    data object Success: RequestState
-    data object NotConnected: RequestState
-    data object NotFound: RequestState
-    data object Loading: RequestState
+sealed class RequestState {
+    object Loading : RequestState()
+    data class Success(val tracks: List<Track>) : RequestState()
+    object NotFound : RequestState()
+    object NotConnected : RequestState()
+    object Empty : RequestState()
 }
