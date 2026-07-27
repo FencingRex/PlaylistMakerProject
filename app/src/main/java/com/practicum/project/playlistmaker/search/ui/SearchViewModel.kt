@@ -51,9 +51,9 @@ class SearchViewModel(private val tracksInteractor: TracksInteractor): ViewModel
     }
     fun clearHistory() {
         tracksInteractor.clearHistory()
-        getHistory()
     }
-    fun searchDebounce() {
+    fun searchDebounce(searchRequest:String) {
+        this.searchRequest = searchRequest
         handler.removeCallbacks(searchRunnable)
         handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
     }

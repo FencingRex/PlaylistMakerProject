@@ -35,15 +35,4 @@ class SettingsViewModel(
     fun openTermsLink(): Intent{
         return sharingInteractor.openTermsLink()
     }
-
-//    companion object{
-//        fun getViewModelFactory(): ViewModelProvider.Factory = viewModelFactory {
-//            initializer {
-//                val settingsInteractor = Creator.provideSettingsInteractor()
-//                val sharingInteractor = Creator.provideSharingInteractor()
-//                SettingsViewModel(sharingInteractor, settingsInteractor)
-//            }
-//        }
-//    }
-
 }
