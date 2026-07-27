@@ -14,12 +14,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.practicum.project.playlistmaker.databinding.ActivitySearchBinding
 import com.practicum.project.playlistmaker.search.domain.models.Track
 import com.practicum.project.playlistmaker.player.ui.PlayerActivity
 import com.practicum.project.playlistmaker.search.model.RequestState
+import org.koin.androidx.viewmodel.ext.android.viewModel
+
 
 class SearchActivity : AppCompatActivity() {
     private var searchQuery: String = ""
@@ -27,7 +28,7 @@ class SearchActivity : AppCompatActivity() {
     private val trackList: MutableList<Track> = mutableListOf()
     private lateinit var historyAdapter: SearchAdapter
     private val handler = Handler(Looper.getMainLooper())
-    private lateinit var viewModel: SearchViewModel
+    private val viewModel by viewModel<SearchViewModel>()
     private lateinit var binding: ActivitySearchBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,7 +42,6 @@ class SearchActivity : AppCompatActivity() {
             insets
         }
 
-        viewModel = ViewModelProvider(this, SearchViewModel.getViewModelFactory())[SearchViewModel::class.java]
         viewModel.requestState.observe(this) { state ->
             when (state) {
                 is RequestState.Loading -> showProgressBar()

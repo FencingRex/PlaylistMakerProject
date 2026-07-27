@@ -4,12 +4,11 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.ViewModelProvider
 import com.practicum.project.playlistmaker.databinding.ActivitySettingsBinding
-
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingsActivity : AppCompatActivity() {
-    private lateinit var viewModel: SettingsViewModel
+    private val viewModel by viewModel<SettingsViewModel>()
     private lateinit var binding: ActivitySettingsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,8 +24,6 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         binding.toolbar.setOnClickListener { finish() }
-
-        viewModel = ViewModelProvider(this, SettingsViewModel.getViewModelFactory())[SettingsViewModel::class.java]
 
         viewModel.getThemeData().observe(this){
             isDarkThemeEnabled -> binding.themeSwitcher.isChecked = isDarkThemeEnabled
