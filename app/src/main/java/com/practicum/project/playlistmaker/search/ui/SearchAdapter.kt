@@ -1,0 +1,31 @@
+package com.practicum.project.playlistmaker.search.ui
+
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import com.practicum.project.playlistmaker.search.domain.models.Track
+
+class SearchAdapter(
+    private var searchResults: MutableList<Track>,
+    private val onClickListener: (Track) -> Unit):
+    RecyclerView.Adapter<SearchViewHolder>() {
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewHolder {
+        return SearchViewHolder(parent)
+    }
+
+    override fun onBindViewHolder(holder: SearchViewHolder, position: Int) {
+        val track = searchResults[position]
+        holder.bind(searchResults[position])
+
+        holder.itemView.setOnClickListener {
+            onClickListener(track)
+        }
+    }
+
+    fun updateList(track: MutableList<Track>){
+        this.searchResults = track
+        notifyDataSetChanged()
+    }
+    override fun getItemCount() = searchResults.size
+
+}
