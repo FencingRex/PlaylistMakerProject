@@ -5,10 +5,6 @@ import android.os.Looper
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.practicum.project.playlistmaker.creator.Creator
 import com.practicum.project.playlistmaker.search.domain.TracksInteractor
 import com.practicum.project.playlistmaker.search.domain.models.Track
 import com.practicum.project.playlistmaker.search.model.RequestState
@@ -55,9 +51,9 @@ class SearchViewModel(private val tracksInteractor: TracksInteractor): ViewModel
     }
     fun clearHistory() {
         tracksInteractor.clearHistory()
-        getHistory()
     }
-    fun searchDebounce() {
+    fun searchDebounce(searchRequest:String) {
+        this.searchRequest = searchRequest
         handler.removeCallbacks(searchRunnable)
         handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
     }
@@ -73,11 +69,6 @@ class SearchViewModel(private val tracksInteractor: TracksInteractor): ViewModel
         return currentClick
     }
     companion object{
-        fun getViewModelFactory(): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                SearchViewModel(tracksInteractor = Creator.provideTrackInteractor())
-            }
-        }
         private const val CLICK_DEBOUNCE_DELAY = 1000L
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
     }

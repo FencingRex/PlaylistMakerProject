@@ -5,10 +5,6 @@ import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.practicum.project.playlistmaker.creator.Creator
 import com.practicum.project.playlistmaker.player.domain.PlayerInteractor
 import com.practicum.project.playlistmaker.player.model.PlayerState
 import com.practicum.project.playlistmaker.player.model.PlayerUiState
@@ -85,12 +81,5 @@ class PlayerViewModel(
     }
     companion object{
         const val UPDATE_TIME_INTERVAL: Long = 500L
-        fun getViewModelFactory(sampleUrl: String): ViewModelProvider.Factory = viewModelFactory{
-            initializer{
-                PlayerViewModel(
-                    sampleUrl,
-                    Creator.providePlayerInteractor())
-            }
-        }
     }
 }

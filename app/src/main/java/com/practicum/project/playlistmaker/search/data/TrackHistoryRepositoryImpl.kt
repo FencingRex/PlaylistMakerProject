@@ -7,7 +7,8 @@ import com.practicum.project.playlistmaker.search.data.dto.TrackDTO
 import com.practicum.project.playlistmaker.search.domain.models.Track
 import com.practicum.project.playlistmaker.search.domain.TrackHistoryRepository
 
-class TrackHistoryRepositoryImpl(private val sharedPreferences: SharedPreferences):
+class TrackHistoryRepositoryImpl(private val gson: Gson,
+                                 private val sharedPreferences: SharedPreferences):
     TrackHistoryRepository {
     override fun addTrackToHistory(track: Track){
         val dto = track.toDto()

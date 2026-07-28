@@ -14,20 +14,20 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.practicum.project.playlistmaker.databinding.ActivitySearchBinding
 import com.practicum.project.playlistmaker.search.domain.models.Track
 import com.practicum.project.playlistmaker.player.ui.PlayerActivity
 import com.practicum.project.playlistmaker.search.model.RequestState
+import org.koin.androidx.viewmodel.ext.android.viewModel
+
 
 class SearchActivity : AppCompatActivity() {
     private var searchQuery: String = ""
     private lateinit var adapter: SearchAdapter
     private val trackList: MutableList<Track> = mutableListOf()
     private lateinit var historyAdapter: SearchAdapter
-    private val handler = Handler(Looper.getMainLooper())
-    private lateinit var viewModel: SearchViewModel
+    private val viewModel by viewModel<SearchViewModel>()
     private lateinit var binding: ActivitySearchBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,7 +41,6 @@ class SearchActivity : AppCompatActivity() {
             insets
         }
 
-        viewModel = ViewModelProvider(this, SearchViewModel.getViewModelFactory())[SearchViewModel::class.java]
         viewModel.requestState.observe(this) { state ->
             when (state) {
                 is RequestState.Loading -> showProgressBar()
@@ -98,7 +97,7 @@ class SearchActivity : AppCompatActivity() {
         }
 
         binding.searchInputText.setOnFocusChangeListener{ _, hasFocus ->
-            if (hasFocus && binding.searchInputText.text.isEmpty() && viewModel.getHistory().isNotEmpty()){ //tracksInteractor.isNotEmpty()
+            if (hasFocus && binding.searchInputText.text.isEmpty() && viewModel.getHistory().isNotEmpty()){
                 updateSearchHistory()
                 binding.historyHeader.visibility = View.VISIBLE
                 binding.history.visibility = View.VISIBLE
@@ -121,7 +120,6 @@ class SearchActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 binding.clearIcon.isVisible = !s.isNullOrEmpty()
                 if (s.isNullOrEmpty()){
-                    handler.removeCallbacks(searchRunnable)
                     updateSearchHistory()
                     binding.searchResults.visibility = View.GONE
                     binding.layoutErrorPlaceholder.visibility = View.GONE
@@ -133,7 +131,7 @@ class SearchActivity : AppCompatActivity() {
                     binding.cleanHistory.visibility = View.GONE
                     binding.progress.visibility = View.GONE
                     binding.progressBar.visibility = View.GONE
-                    viewModel.searchDebounce()
+                    viewModel.searchDebounce(s.toString())
                 }
             }
 
@@ -149,7 +147,6 @@ class SearchActivity : AppCompatActivity() {
         binding.searchInputText.setOnEditorActionListener { _, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     if (binding.searchInputText.text.isNotEmpty()){
-                        viewModel.searchDebounce()
                         searchTrack(binding.searchInputText.text.toString())
                     }
                 }
@@ -159,7 +156,6 @@ class SearchActivity : AppCompatActivity() {
             searchTrack(binding.searchInputText.text.toString())
         }
     }
-    private val searchRunnable = Runnable {searchTrack(binding.searchInputText.text.toString())}
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -254,7 +250,7 @@ class SearchActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        handler.removeCallbacks(searchRunnable)
+        viewModel.removeCallback()
     }
 
 }

@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.IntentCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.project.playlistmaker.R
@@ -15,9 +14,17 @@ import com.practicum.project.playlistmaker.databinding.ActivityPlayerBinding
 import com.practicum.project.playlistmaker.player.model.PlayerState
 import com.practicum.project.playlistmaker.player.model.PlayerUiState
 import com.practicum.project.playlistmaker.search.domain.models.Track
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
+
 class PlayerActivity: AppCompatActivity() {
     private lateinit var binding: ActivityPlayerBinding
-    private lateinit var viewModel: PlayerViewModel
+    private val track: Track? by lazy {
+        IntentCompat.getParcelableExtra<Track>(intent, "Track", Track::class.java)
+    }
+    private val viewModel by viewModel<PlayerViewModel>{
+        parametersOf(track!!.previewUrl)
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPlayerBinding.inflate(layoutInflater)
@@ -30,14 +37,7 @@ class PlayerActivity: AppCompatActivity() {
             insets
         }
 
-        val track = IntentCompat.getParcelableExtra<Track>(intent, "Track", Track::class.java)
-
         binding.toolbar.setOnClickListener { finish() }
-
-        viewModel = ViewModelProvider(
-            this,
-            PlayerViewModel.getViewModelFactory(track!!.previewUrl)
-        )[PlayerViewModel::class.java]
 
         fun Int.dpToPx(context: Context): Int {
             return (this * context.resources.displayMetrics.density).toInt()
