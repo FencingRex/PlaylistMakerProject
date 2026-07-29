@@ -21,4 +21,8 @@
     <string name="albumYear">Year</string>
     <string name="albumGenre">Genre</string>
     <string name="country">Country</string>
+    <string name="newPlaylist">New Playlist</string>
+    <string name="emptyLibrary">Your Medialibrary is empty</string>
+    <string name="favoritesTracks">Favorites tracks</string>
+    <string name="playlists">Playlists</string>
 </resources>
