@@ -6,7 +6,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".medialib.ui.MediaActivity">
+    tools:context=".medialib.ui.MediaActivity"
+    android:background="@color/yp_black"
+    >
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
@@ -21,7 +23,8 @@
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/mediaTab"
+        android:textAllCaps="false"
+        style="@style/TabLayoutStyle"
         app:tabIndicatorFullWidth="true"/>
 
     <androidx.viewpager2.widget.ViewPager2

@@ -9,11 +9,7 @@ import com.practicum.project.playlistmaker.databinding.FragmentFavoritesBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FavoritesFragment: Fragment() {
-    companion object {
-        fun newInstance() = FavoritesFragment()
-    }
-
-    private lateinit var binding: FragmentFavoritesBinding
+    private var binding: FragmentFavoritesBinding? = null
 
     private val viewModel by viewModel<FavoritesViewModel>()
 
@@ -23,6 +19,13 @@ class FavoritesFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentFavoritesBinding.inflate(inflater, container, false)
-        return binding.root
+        return binding?.root
+    }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding = null
+    }
+    companion object {
+        fun newInstance() = FavoritesFragment()
     }
 }
