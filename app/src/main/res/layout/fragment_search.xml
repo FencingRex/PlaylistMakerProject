@@ -2,19 +2,17 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/search_activity"
+    android:id="@+id/fragment_search"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     style="@style/settingsScreen"
-    tools:context=".main.ui.MainActivity"
+    tools:context=".search.ui.SearchFragment"
     >
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
         style="@style/CustomToolbarStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
-        app:navigationIcon="@drawable/ic_arrow_back_24"
         app:title="@string/search">
 
     </com.google.android.material.appbar.MaterialToolbar>

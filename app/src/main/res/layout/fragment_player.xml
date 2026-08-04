@@ -3,10 +3,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     style="@style/playerMainScreen"
+    tools:context=".player.ui.PlayerFragment"
     >
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -21,8 +21,6 @@
             style="@style/CustomToolbarStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
-            app:navigationIcon="@drawable/ic_arrow_back_24"
             app:layout_constraintTop_toTopOf="parent">
         </com.google.android.material.appbar.MaterialToolbar>
 
@@ -248,4 +246,3 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>
-<!--tools:ignore="MissingConstraints"-->

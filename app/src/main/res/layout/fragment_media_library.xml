@@ -2,12 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/medialib_activity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".medialib.ui.MediaActivity"
-    android:background="@color/yp_black"
+    tools:context=".medialib.ui.MediaLibraryFragment"
+    style="@style/settingsScreen"
     >
 
     <com.google.android.material.appbar.MaterialToolbar
@@ -15,8 +14,6 @@
         style="@style/CustomToolbarStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
-        app:navigationIcon="@drawable/ic_arrow_back_24"
         app:title="@string/mediateka"/>
 
     <com.google.android.material.tabs.TabLayout
