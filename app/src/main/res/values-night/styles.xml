@@ -221,8 +221,8 @@
         <item name="tabTextAppearance">@style/AppTabTextAppearance</item>
     </style>
     <style name="BottomNavigationMenu">
-        <item name="itemIconTint">@color/yp_white</item>
-        <item name="itemTextColor">@color/yp_white</item>
+        <item name="itemIconTint">@color/nav_item_color</item>
+        <item name="itemTextColor">@color/nav_item_color</item>
         <item name="itemTextAppearanceActive">@style/BottomNavText</item>
         <item name="itemTextAppearanceInactive">@style/BottomNavText</item>
         <item name="itemActiveIndicatorStyle">@null</item>
