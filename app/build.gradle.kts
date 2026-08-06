@@ -42,6 +42,8 @@ android {
 dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.androidx.viewpager2)
     implementation(libs.material)
     implementation(libs.androidx.activity)
@@ -57,4 +59,8 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:3.0.0")
     implementation("com.google.code.gson:gson:2.13.2")
     implementation("io.insert-koin:koin-android:3.3.0")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.9.8")
+    implementation("androidx.navigation:navigation-ui-ktx:2.9.8")
+    implementation("androidx.fragment:fragment-ktx:1.8.9")
+    implementation("com.google.android.material:material:1.14.0")
 }

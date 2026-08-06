@@ -1,12 +1,14 @@
 package com.practicum.project.playlistmaker.main.ui
 
-import android.content.Intent
 import android.os.Bundle
+import android.view.View
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
+import androidx.navigation.fragment.NavHostFragment
 import com.practicum.project.playlistmaker.databinding.ActivityMainBinding
-import com.practicum.project.playlistmaker.medialib.ui.MediaActivity
-import com.practicum.project.playlistmaker.search.ui.SearchActivity
-import com.practicum.project.playlistmaker.settings.ui.SettingsActivity
+import androidx.navigation.ui.setupWithNavController
+import com.practicum.project.playlistmaker.R
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -15,19 +17,22 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.btnSettings.setOnClickListener {
-            val settingsIntent = Intent(this, SettingsActivity::class.java)
-            startActivity(settingsIntent)
-        }
-        binding.btnMedia.setOnClickListener {
-            val mediaIntent = Intent(this, MediaActivity::class.java)
-            startActivity(mediaIntent)
-        }
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.rootFragmentContainerView) as NavHostFragment
 
-        binding.btnSearch.setOnClickListener {
-            val searchIntent = Intent(this, SearchActivity::class.java)
-            startActivity(searchIntent)
-        }
+        val navController = navHostFragment.navController
+        binding.bottomNavigationView.setupWithNavController(navController)
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                R.id.playerFragment -> {
+                    binding.bottomNavigationView.isVisible = false
+                    binding.divider.isVisible = false
+                }
 
+                else -> {
+                    binding.bottomNavigationView.isVisible = true
+                    binding.divider.isVisible = true
+                }
+            }
+        }
     }
 }
