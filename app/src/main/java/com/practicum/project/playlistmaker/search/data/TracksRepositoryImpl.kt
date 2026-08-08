@@ -1,5 +1,7 @@
 package com.practicum.project.playlistmaker.search.data
 
+import com.practicum.project.playlistmaker.R
+import com.practicum.project.playlistmaker.utils.Resource
 import com.practicum.project.playlistmaker.search.data.network.NetworkClient
 import com.practicum.project.playlistmaker.search.data.dto.TrackDTO
 import com.practicum.project.playlistmaker.search.data.dto.TrackSearchRequest
@@ -7,30 +9,30 @@ import com.practicum.project.playlistmaker.search.data.dto.TrackSearchResponse
 import com.practicum.project.playlistmaker.search.domain.models.Track
 import com.practicum.project.playlistmaker.search.domain.TrackHistoryRepository
 import com.practicum.project.playlistmaker.search.domain.TracksRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 class TracksRepositoryImpl(
     private val networkClient: NetworkClient,
     private val trackHistoryRepository: TrackHistoryRepository
 ) : TracksRepository {
-    override fun searchTracks(expression: String): List<Track> {
+    override fun searchTracks(expression: String):  Flow<Resource<List<Track>>> = flow {
         val response = networkClient.doRequest(TrackSearchRequest(expression))
-        if (response.resultCode == 200) {
-            return (response as TrackSearchResponse).results.map{ dto ->
-                Track(
-                    dto.trackId,
-                    dto.trackName,
-                    dto.artistName,
-                    dto.trackTimeMillis,
-                    dto.artworkUrl100,
-                    dto.collectionName,
-                    dto.releaseDate,
-                    dto.primaryGenreName,
-                    dto.country,
-                    dto.previewUrl
-                )
+        when (response.resultCode) {
+            -1 ->{
+                emit(Resource.Error(NO_INTERNET_CONNECTION))
             }
-        }else {
-            return emptyList()
+            200 -> {
+                with(response as TrackSearchResponse) {
+                    val data = results.map {
+                        it.toDomain()
+                    }
+                    emit(Resource.Success(data))
+                }
+            }
+            else -> {
+                emit(Resource.Error("$ERROR:${response.resultCode}"))
+            }
         }
     }
 
@@ -82,4 +84,8 @@ class TracksRepositoryImpl(
         country,
         previewUrl
     )
+    companion object {
+        const val NO_INTERNET_CONNECTION = "No internet connection"
+        const val ERROR = "Error"
+    }
 }
