@@ -1,13 +1,16 @@
 package com.practicum.project.playlistmaker.player.ui
 
-import android.os.Handler
-import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.practicum.project.playlistmaker.player.domain.PlayerInteractor
 import com.practicum.project.playlistmaker.player.model.PlayerState
 import com.practicum.project.playlistmaker.player.model.PlayerUiState
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+
 
 class PlayerViewModel(
     sampleUrl: String,
@@ -15,9 +18,8 @@ class PlayerViewModel(
     ): ViewModel() {
     private val playerStateLiveData = MutableLiveData(PlayerUiState())
     val playerUIState: LiveData<PlayerUiState> = playerStateLiveData
-    private var mainThreadHandler = Handler(Looper.getMainLooper())
-    private var timerRunnable: Runnable? = null
 
+    private var timerJob: Job? = null
     init {
         preparePlayer(sampleUrl)
     }
@@ -26,7 +28,7 @@ class PlayerViewModel(
             url = sampleUrl,
             onPrepared = { },
             onCompletion = {
-               stopTimer()
+                stopTimer()
                 playerStateLiveData.postValue(PlayerUiState(PlayerState.STATE_PREPARED,"00:00"))
             })
         playerStateLiveData.postValue(PlayerUiState(PlayerState.STATE_PREPARED, "00:00"))
@@ -46,28 +48,15 @@ class PlayerViewModel(
         )
     }
     private fun startTimer() {
-        if (timerRunnable != null) return
-        val runnable = object : Runnable {
-            override fun run() {
-                if (playerInteractor.isPlaying()) {
-                    val position = playerInteractor.getCurrentPosition()
-                    playerStateLiveData.postValue(
-                        PlayerUiState(PlayerState.STATE_PLAYING, position)
-                    )
-                    mainThreadHandler.postDelayed(this, UPDATE_TIME_INTERVAL)
-                } else {
-                    stopTimer()
-                }
+        timerJob = viewModelScope.launch {
+            while (playerInteractor.isPlaying()){
+                playerStateLiveData.postValue(PlayerUiState(PlayerState.STATE_PLAYING,playerInteractor.getCurrentPosition()))
+                delay(UPDATE_TIME_INTERVAL)
             }
         }
-        timerRunnable = runnable
-        mainThreadHandler.post(runnable)
     }
     private fun stopTimer(){
-        timerRunnable?.let {
-            mainThreadHandler.removeCallbacks(it)
-            timerRunnable = null
-        }
+        timerJob?.cancel()
     }
     fun pausePlayer(){
         playerInteractor.pausePlayer()
@@ -80,6 +69,6 @@ class PlayerViewModel(
         playerStateLiveData.postValue(PlayerUiState())
     }
     companion object{
-        const val UPDATE_TIME_INTERVAL: Long = 500L
+        const val UPDATE_TIME_INTERVAL: Long = 300L
     }
 }
