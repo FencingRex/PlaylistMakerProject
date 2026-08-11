@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.practicum.project.playlistmaker.search.domain.models.Track
 
 class SearchAdapter(
-    private var searchResults: MutableList<Track>,
+    private var searchResults: List<Track>,
     private val onClickListener: (Track) -> Unit):
     RecyclerView.Adapter<SearchViewHolder>() {
 
@@ -22,7 +22,7 @@ class SearchAdapter(
         }
     }
 
-    fun updateList(track: MutableList<Track>){
+    fun updateList(track: List<Track>){
         this.searchResults = track
         notifyDataSetChanged()
     }

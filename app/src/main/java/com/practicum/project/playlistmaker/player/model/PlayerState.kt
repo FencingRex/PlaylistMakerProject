@@ -8,5 +8,7 @@ enum class PlayerState {
 }
 data class PlayerUiState(
     val status: PlayerState = PlayerState.STATE_DEFAULT,
-    val currentPosition: String = "00:00"
+    val currentPosition: String = "00:00",
+    val isFavorite: Boolean = false
+
 )
