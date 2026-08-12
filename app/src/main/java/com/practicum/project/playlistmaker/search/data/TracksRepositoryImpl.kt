@@ -1,6 +1,5 @@
 package com.practicum.project.playlistmaker.search.data
 
-import com.practicum.project.playlistmaker.R
 import com.practicum.project.playlistmaker.utils.Resource
 import com.practicum.project.playlistmaker.search.data.network.NetworkClient
 import com.practicum.project.playlistmaker.search.data.dto.TrackDTO

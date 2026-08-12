@@ -2,7 +2,9 @@ package com.practicum.project.playlistmaker.di
 
 import android.content.Context.MODE_PRIVATE
 import android.media.MediaPlayer
+import androidx.room.Room
 import com.google.gson.Gson
+import com.practicum.project.playlistmaker.medialib.data.db.AppDatabase
 import com.practicum.project.playlistmaker.search.data.TrackHistoryRepositoryImpl
 import com.practicum.project.playlistmaker.search.data.TrackHistoryRepositoryImpl.Companion.SEARCH_HISTORY_PREF
 import com.practicum.project.playlistmaker.search.data.network.NetworkClient
@@ -43,5 +45,11 @@ val dataModule = module {
     }
     factory {
         MediaPlayer()
+    }
+
+    single{
+        Room.databaseBuilder(androidContext(), AppDatabase::class.java, "database.db")
+            .fallbackToDestructiveMigration()
+            .build()
     }
 }

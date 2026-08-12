@@ -26,7 +26,7 @@ class PlayerFragment: Fragment() {
         arguments?.getParcelable(ARGS_TRACK_KEY)
     }
     private val viewModel by viewModel<PlayerViewModel>{
-        parametersOf(track!!.previewUrl)
+        parametersOf(track!!.previewUrl,track!!.trackId)
     }
 
     override fun onCreateView(
@@ -57,6 +57,10 @@ class PlayerFragment: Fragment() {
         binding.countryValue.text = track?.country.toString()
         binding.playbackDuration?.text = "00:00"
 
+        binding.favoriteButton.setOnClickListener {
+            viewModel.onFavoriteClicked(track)
+        }
+
         val radiusInPx = 2.dpToPx(binding.albumCover.context)
 
         Glide.with(binding.albumCover)
@@ -83,6 +87,7 @@ class PlayerFragment: Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
     private fun render(uiState: PlayerUiState) {
         when (uiState.status) {
             PlayerState.STATE_DEFAULT -> {}
@@ -100,6 +105,10 @@ class PlayerFragment: Fragment() {
                 binding.playbackDuration.text = uiState.currentPosition
             }
         }
+        if (uiState.isFavorite) {
+            binding.favoriteButton.setImageResource(R.drawable.ic_button_favorite)
+        } else
+            binding.favoriteButton.setImageResource(R.drawable.ic_button_add_favorite_51)
     }
     companion object{
         const val ARGS_TRACK_KEY = "track"

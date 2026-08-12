@@ -14,13 +14,13 @@ val viewModelModule = module {
     }
     viewModel {
         (url: String) ->
-        PlayerViewModel(url,get())
+        PlayerViewModel(url,get(),get(),get())
     }
     viewModel {
         SettingsViewModel(get(),get())
     }
     viewModel {
-        FavoritesViewModel()
+        FavoritesViewModel(get())
     }
     viewModel {
         PlaylistsViewModel()
