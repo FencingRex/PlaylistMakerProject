@@ -5,6 +5,7 @@ import com.practicum.project.playlistmaker.medialib.data.db.entity.TrackEntity
 import com.practicum.project.playlistmaker.medialib.domain.FavoritesRepository
 import com.practicum.project.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 
 class FavoritesRepositoryImpl(
@@ -23,7 +24,7 @@ class FavoritesRepositoryImpl(
     override suspend fun getFavorites(): Flow<List<Track>> {
         return appDatabase.trackDao().getTrackList().map { tracks ->
             convertFromEntity(tracks)
-        }
+        }.distinctUntilChanged()
     }
 
     override suspend fun isFavorite(trackId: Int): Boolean{

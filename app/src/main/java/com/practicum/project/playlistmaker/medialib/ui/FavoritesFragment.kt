@@ -77,4 +77,7 @@ class FavoritesFragment: Fragment() {
         binding.placeholderImage.isVisible = false
         binding.placeholderMessage.isVisible = false
     }
+    companion object {
+        fun newInstance() = FavoritesFragment()
+    }
 }

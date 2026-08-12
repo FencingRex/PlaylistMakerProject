@@ -10,7 +10,7 @@ class MediaAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle) : Fra
 
     override fun createFragment(position: Int): Fragment {
         return when(position) {
-            0 -> FavoritesFragment()
+            0 -> FavoritesFragment.newInstance()
             else -> PlaylistsFragment.newInstance()
         }
     }
