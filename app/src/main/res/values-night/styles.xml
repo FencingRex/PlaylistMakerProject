@@ -236,4 +236,24 @@
         <item name="android:textFontWeight">400</item>
         <item name="android:textSize">12sp</item>
     </style>
+
+    <style name="NewPlaylistTextInputEditText">
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:textColor">@color/yp_white</item>
+        <item name="android:textFontWeight">400</item>
+        <item name="android:textSize">@dimen/textSizeBody</item>
+        <item name="android:imeOptions">actionDone</item>
+        <item name="android:inputType">text</item>
+    </style>
+
+    <style name="NewPlaylistTextInputLayout">
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:textColorHint">@color/yp_white</item>
+        <item name="android:textFontWeight">400</item>
+        <item name="android:textSize">@dimen/textSizeBody</item>
+        <item name="boxBackgroundMode">outline</item>
+        <item name="colorOutline">@color/yp_white</item>
+        <item name="hintTextColor">@color/yp_blue</item>
+        <item name="boxStrokeColor">@color/text_input_stroke_color</item>
+    </style>
 </resources>

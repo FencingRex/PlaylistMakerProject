@@ -31,4 +31,16 @@
     <string name="emptyLibrary">Ваша медиатека пуста</string>
     <string name="favoritesTracks">Избранные треки</string>
     <string name="playlists">Плейлисты</string>
+    <string name="create">Создать</string>
+    <string name="playlistNane">Название*</string>
+    <string name="description">Описание</string>
+    <string name="requiredField">Обязательное поле</string>
+    <string name="confirmMessageHeader" translatable="false">Завершить создание плейлиста?</string>
+    <string name="confirmMessage" translatable="false">Все несохраненные данные будут потеряны</string>
+    <string name="confirmButton" translatable="false">Завершить</string>
+    <string name="confirmCancel" translatable="false">Отмена</string>
+    <string name="addToPlaylist">Добавить в плейлист</string>
+    <string name="addedToPlaylist">Добавлено в плейлист %s»</string>
+    <string name="alreadyExists">Трек уже добавлен в плейлист %s</string>
+    <string name="playlistNotFound">Плейлист не найден</string>
 </resources>

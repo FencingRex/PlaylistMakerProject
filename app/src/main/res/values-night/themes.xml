@@ -4,7 +4,7 @@
         <!-- Customize your dark theme here. -->
         <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
         <item name="colorPrimary">@color/yp_white</item>
-        <item name="colorOnPrimary">@color/yp_white</item>
+        <item name="colorOnPrimary">@color/yp_black</item>
         <item name="colorSurface">@color/yp_white</item>
         <item name="colorOnSurface">@color/yp_black</item>
         <item name="colorOnSurfaceVariant">@color/yp_text_gray</item>

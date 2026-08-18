@@ -1,0 +1,36 @@
+package com.practicum.project.playlistmaker.medialib.ui
+
+import android.content.Context
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.practicum.project.playlistmaker.R
+import com.practicum.project.playlistmaker.medialib.model.Playlist
+
+class PlaylistsViewHolder(parent: ViewGroup): RecyclerView.ViewHolder (
+    LayoutInflater.from(parent.context).inflate(
+        R.layout.playlist_result_item,parent,false)){
+    private val coverView: ImageView = itemView.findViewById(R.id.playlistCover)
+    private val playlistName: TextView = itemView.findViewById(R.id.playlistName)
+    private val qtyTracks: TextView = itemView.findViewById(R.id.playlistTracksQty)
+    fun Int.dpToPx(context: Context): Int {
+        return (this * context.resources.displayMetrics.density).toInt()
+    }
+    fun bind (playlist: Playlist){
+        playlistName.text = playlist.name
+        qtyTracks.text = playlist.tracksQty.toString()
+
+        val radiusInPx = 2.dpToPx(itemView.context)
+
+        Glide.with(itemView)
+            .load(playlist.coverUri)
+            .placeholder(R.drawable.ic_cover_placeholder_34)
+            .fitCenter()
+            .transform(RoundedCorners(radiusInPx))
+            .into(coverView)
+    }
+}

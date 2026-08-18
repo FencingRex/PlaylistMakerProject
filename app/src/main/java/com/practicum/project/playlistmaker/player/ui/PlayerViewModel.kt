@@ -5,6 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.practicum.project.playlistmaker.medialib.domain.FavoritesInteractor
+import com.practicum.project.playlistmaker.medialib.domain.PlaylistInteractor
+import com.practicum.project.playlistmaker.medialib.model.AddTrackResult
+import com.practicum.project.playlistmaker.medialib.model.Playlist
+import com.practicum.project.playlistmaker.medialib.model.PlaylistState
 import com.practicum.project.playlistmaker.player.domain.PlayerInteractor
 import com.practicum.project.playlistmaker.player.model.PlayerState
 import com.practicum.project.playlistmaker.player.model.PlayerUiState
@@ -18,17 +22,22 @@ class PlayerViewModel(
     sampleUrl: String,
     trackId: Int,
     private val playerInteractor: PlayerInteractor,
-    private val favoritesInteractor: FavoritesInteractor
+    private val favoritesInteractor: FavoritesInteractor,
+    private val playlistsInteractor: PlaylistInteractor
     ): ViewModel() {
     private val playerStateLiveData = MutableLiveData(PlayerUiState())
     val playerUIState: LiveData<PlayerUiState> = playerStateLiveData
-
+    private val _addTrackResultLiveData = MutableLiveData<AddTrackResult>()
+    val addTrackResultLiveData: LiveData<AddTrackResult> = _addTrackResultLiveData
+    private val playlistStateLiveData = MutableLiveData<PlaylistState>()
+    fun getPlaylistState(): LiveData<PlaylistState> = playlistStateLiveData
     private var timerJob: Job? = null
     private var favoriteJob: Job? = null
 
     init {
         preparePlayer(sampleUrl)
         checkFavoriteStatus(trackId)
+        getPlaylists()
     }
     fun preparePlayer(sampleUrl: String){
         playerInteractor.preparePlayer(
@@ -120,6 +129,20 @@ class PlayerViewModel(
             }
             playerStateLiveData.postValue(currentState.copy(isFavorite = newFavorite))
         }
+    }
+    fun getPlaylists(){
+        viewModelScope.launch {
+            playlistsInteractor.getAllPlaylists().collect {
+                if (it.isEmpty()) playlistStateLiveData.postValue(PlaylistState.Empty)
+                else playlistStateLiveData.postValue(PlaylistState.Content(it))
+            }
+        }
+    }
+    fun addTrackToPlaylist(track: Track, playlist: Playlist){
+      viewModelScope.launch {
+          val addResult = playlistsInteractor.addTrackToPlaylist(track.trackId,playlist.id)
+          _addTrackResultLiveData.value = addResult
+      }
     }
     companion object{
         const val UPDATE_TIME_INTERVAL: Long = 300L
