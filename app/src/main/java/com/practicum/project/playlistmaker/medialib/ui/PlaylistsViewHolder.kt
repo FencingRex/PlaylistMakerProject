@@ -22,7 +22,7 @@ class PlaylistsViewHolder(parent: ViewGroup): RecyclerView.ViewHolder (
     }
     fun bind (playlist: Playlist){
         playlistName.text = playlist.name
-        qtyTracks.text = playlist.tracksQty.toString()
+        qtyTracks.text = playlist.tracksQty.toString() +" треков"
 
         val radiusInPx = 2.dpToPx(itemView.context)
 
