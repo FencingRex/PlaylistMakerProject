@@ -14,7 +14,7 @@
         android:layout_width="160dp"
         android:layout_height="160dp"
         android:background="@drawable/rounded_cover"
-        android:scaleType="fitCenter"
+        android:scaleType="centerCrop"
         tools:src="@drawable/ic_cover_placeholder_104"
         app:layout_constraintDimensionRatio="1:1"
         android:clipToOutline="true"/>

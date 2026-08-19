@@ -7,6 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.project.playlistmaker.R
 import com.practicum.project.playlistmaker.medialib.model.Playlist
@@ -33,7 +34,7 @@ class PlaylistsViewHolder(parent: ViewGroup): RecyclerView.ViewHolder (
             .load(playlist.coverUri)
             .placeholder(R.drawable.ic_cover_placeholder_34)
             .fitCenter()
-            .transform(RoundedCorners(radiusInPx))
+            .transform(CenterCrop(),RoundedCorners(radiusInPx))
             .into(coverView)
     }
 }
