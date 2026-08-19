@@ -20,9 +20,12 @@ class PlaylistsViewHolder(parent: ViewGroup): RecyclerView.ViewHolder (
     fun Int.dpToPx(context: Context): Int {
         return (this * context.resources.displayMetrics.density).toInt()
     }
+    fun tracksQtyText(context: Context,quantity: Int): String{
+        return context.resources.getQuantityString(R.plurals.tracks_count,quantity,quantity)
+    }
     fun bind (playlist: Playlist){
         playlistName.text = playlist.name
-        qtyTracks.text = playlist.tracksQty.toString() +" треков"
+        qtyTracks.text = tracksQtyText(itemView.context, playlist.tracksQty)
 
         val radiusInPx = 2.dpToPx(itemView.context)
 

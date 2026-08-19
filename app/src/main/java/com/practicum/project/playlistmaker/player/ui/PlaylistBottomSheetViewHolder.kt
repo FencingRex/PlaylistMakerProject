@@ -14,9 +14,12 @@ class PlaylistBottomSheetViewHolder(private val binding: PlaylistBottomViewSheet
     RecyclerView.ViewHolder(binding.root) {
 
     val radiusInPx = 2.dpToPx(itemView.context)
+    fun tracksQtyText(context: Context,quantity: Int): String{
+        return context.resources.getQuantityString(R.plurals.tracks_count,quantity,quantity)
+    }
     fun bind(item: Playlist) {
         binding.playlistName.text = item.name
-        binding.tracksQty.text = item.tracksQty.toString() + " треков"
+        binding.tracksQty.text = tracksQtyText(itemView.context, item.tracksQty)
 
         Glide.with(itemView)
             .load(item.coverUri)
