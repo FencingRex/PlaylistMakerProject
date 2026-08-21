@@ -5,13 +5,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.practicum.project.playlistmaker.R
 
 import com.practicum.project.playlistmaker.databinding.FragmentPlayerBinding
+import com.practicum.project.playlistmaker.medialib.model.AddTrackResult
+import com.practicum.project.playlistmaker.medialib.model.PlaylistState
 
 import com.practicum.project.playlistmaker.player.model.PlayerState
 import com.practicum.project.playlistmaker.player.model.PlayerUiState
@@ -28,6 +33,7 @@ class PlayerFragment: Fragment() {
     private val viewModel by viewModel<PlayerViewModel>{
         parametersOf(track!!.previewUrl,track!!.trackId)
     }
+    private lateinit var playlistsAdapter: PlaylistBottomSheetAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -61,6 +67,57 @@ class PlayerFragment: Fragment() {
             viewModel.onFavoriteClicked(track)
         }
 
+        val bottomSheetBehavior = BottomSheetBehavior.from(binding.playlistsBottomSheet).apply {
+            state = BottomSheetBehavior.STATE_HIDDEN
+        }
+
+        viewModel.addTrackResultLiveData.observe(viewLifecycleOwner){ result ->
+            when (result){
+                is AddTrackResult.Success -> {
+                    val message = "Добавлено в плейлист ${result.playlistName}"
+                    Toast.makeText(requireContext(),message, Toast.LENGTH_SHORT).show()
+                    bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+                }
+
+                is AddTrackResult.AlreadyExists -> {
+                    val message = "Трек уже добавлен в плейлист ${result.playlistName}"
+                    Toast.makeText(requireContext(),message, Toast.LENGTH_SHORT).show()
+                }
+
+                AddTrackResult.PlaylistNotFound -> {
+                    Toast.makeText(requireContext(),"", Toast.LENGTH_SHORT).show()
+                }
+
+                AddTrackResult.Error -> {
+                    Toast.makeText(requireContext(),"", Toast.LENGTH_SHORT).show()
+                }
+                else -> {}
+            }
+        }
+        playlistsAdapter = PlaylistBottomSheetAdapter{ viewModel.addTrackToPlaylist(track!!,it)}
+        binding.playlistsList.adapter = playlistsAdapter
+
+        bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onSlide(bottomShet: View, slide: Float) {
+
+            }
+
+            override fun onStateChanged(bottomSheet: View, state: Int) {
+                when (state) {
+                    BottomSheetBehavior.STATE_HIDDEN -> {
+                        binding.overlay.isVisible = false
+                    }
+
+                    else -> {
+                        binding.overlay.isVisible = true
+                    }
+                }
+            }
+        })
+        binding.addButton.setOnClickListener {
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        }
+
         val radiusInPx = 2.dpToPx(binding.albumCover.context)
 
         Glide.with(binding.albumCover)
@@ -73,6 +130,12 @@ class PlayerFragment: Fragment() {
         binding.playButton.setOnClickListener { viewModel.playbackControl() }
         viewModel.playerUIState.observe(viewLifecycleOwner) { playerUIState ->
             render(playerUIState)
+        }
+        viewModel.getPlaylistState().observe(viewLifecycleOwner){
+            renderPlaylists(it)
+        }
+        binding.btnNewPlaylist.setOnClickListener {
+            findNavController().navigate(R.id.action_playerFragment_to_newPlaylistFragment)
         }
     }
     override fun onPause() {
@@ -110,6 +173,18 @@ class PlayerFragment: Fragment() {
         } else
             binding.favoriteButton.setImageResource(R.drawable.ic_button_add_favorite_51)
     }
+
+    private fun renderPlaylists(state: PlaylistState){
+        when (state) {
+            is PlaylistState.Content -> {
+                playlistsAdapter.submitList(state.playlist)
+            }
+            is PlaylistState.Empty -> {
+                playlistsAdapter.submitList(emptyList())
+            }
+        }
+    }
+
     companion object{
         const val ARGS_TRACK_KEY = "track"
         fun createArgs(track: Track): Bundle =

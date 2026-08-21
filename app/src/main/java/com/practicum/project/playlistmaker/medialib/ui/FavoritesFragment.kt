@@ -14,7 +14,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.practicum.project.playlistmaker.R
 import com.practicum.project.playlistmaker.medialib.model.FavoritesState
 import com.practicum.project.playlistmaker.player.ui.PlayerFragment
-import com.practicum.project.playlistmaker.search.domain.models.Track
+
 
 class FavoritesFragment: Fragment() {
     private var _binding: FragmentFavoritesBinding? = null

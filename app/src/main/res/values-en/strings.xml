@@ -25,4 +25,12 @@
     <string name="emptyLibrary">Your Medialibrary is empty</string>
     <string name="favoritesTracks">Favorites tracks</string>
     <string name="playlists">Playlists</string>
+    <string name="create">Create</string>
+    <string name="playlistNane">Playlist Name*</string>
+    <string name="description">Description</string>
+    <string name="requiredField">Required Field</string>
+    <string name="addToPlaylist">Add to playlist</string>
+    <string name="addedToPlaylist">Added to playlist</string>
+    <string name="alreadyExists">"Track allready exists in playlist "</string>
+    <string name="playlistNotFound">Playlist not found</string>
 </resources>

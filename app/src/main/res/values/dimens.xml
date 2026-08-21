@@ -23,6 +23,7 @@
     <dimen name="textSizeLarge">22sp</dimen>
     <dimen name="textSizeTitle">22sp</dimen>
     <dimen name="textSizeBody">16sp</dimen>
+    <dimen name="textSizePlaylist">12sp</dimen>
 
     <dimen name="layoutWeight">1</dimen>
     <dimen name="layoutWeightSmall">0.1</dimen>

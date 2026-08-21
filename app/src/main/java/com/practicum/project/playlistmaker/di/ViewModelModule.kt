@@ -14,7 +14,7 @@ val viewModelModule = module {
     }
     viewModel {
         (url: String) ->
-        PlayerViewModel(url,get(),get(),get())
+        PlayerViewModel(url,get(),get(),get(),get())
     }
     viewModel {
         SettingsViewModel(get(),get())
@@ -23,6 +23,6 @@ val viewModelModule = module {
         FavoritesViewModel(get())
     }
     viewModel {
-        PlaylistsViewModel()
+        PlaylistsViewModel(get())
     }
 }
