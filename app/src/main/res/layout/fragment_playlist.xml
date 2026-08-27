@@ -19,21 +19,6 @@
             android:orientation="vertical"
             app:layout_constraintGuide_begin="@dimen/paddingHorizontal" />
 
-        <ImageButton
-            android:id="@+id/arrowBack"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="@dimen/marginPadding"
-            android:layout_marginTop="@dimen/marginPadding"
-            android:layout_marginBottom="@dimen/marginPadding"
-            android:src="@drawable/ic_arrow_back_24"
-            app:tint="?attr/colorSurface"
-            android:background="@null"
-            android:clickable="true"
-            app:layout_constraintStart_toStartOf="@id/leftGuidelineIn16Dp"
-            app:layout_constraintTop_toTopOf="parent" />
-
         <TextView
             android:id="@+id/playlistName"
             android:fontFamily="@font/ys_display_bold"
@@ -95,6 +80,21 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/arrowBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/marginPadding"
+            android:layout_marginTop="@dimen/marginPadding"
+            android:layout_marginBottom="@dimen/marginPadding"
+            android:src="@drawable/ic_arrow_back_24"
+            app:tint="?attr/colorSurface"
+            android:background="@null"
+            android:clickable="true"
+            app:layout_constraintStart_toStartOf="@id/leftGuidelineIn16Dp"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView

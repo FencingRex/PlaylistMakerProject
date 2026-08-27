@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavigationView.setupWithNavController(navController)
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.playerFragment, R.id.newPlaylistFragment -> {
+                R.id.playerFragment, R.id.newPlaylistFragment, R.id.editPlaylistFragment, R.id.playlistFragment -> {
                     binding.bottomNavigationView.isVisible = false
                     binding.divider.isVisible = false
                 }
