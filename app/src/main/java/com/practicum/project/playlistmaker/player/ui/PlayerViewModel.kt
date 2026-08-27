@@ -140,8 +140,8 @@ class PlayerViewModel(
     }
     fun addTrackToPlaylist(track: Track, playlist: Playlist){
       viewModelScope.launch {
-          val addResult = playlistsInteractor.addTrackToPlaylist(track.trackId,playlist.id)
-          _addTrackResultLiveData.value = addResult
+              val addResult = playlistsInteractor.addTrackToPlaylist(playlist.id, track)
+              _addTrackResultLiveData.value = addResult
       }
     }
     companion object{

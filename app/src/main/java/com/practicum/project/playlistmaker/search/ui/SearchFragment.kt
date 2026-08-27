@@ -168,23 +168,29 @@ class SearchFragment : Fragment() {
     }
     private fun setRecyclerView(){
 
-        adapter = SearchAdapter(trackList) { track ->
-            if (viewModel.clickDebounce(track)) {
-                val action = findNavController().navigate(R.id.action_searchFragment_to_playerFragment, PlayerFragment.createArgs(track))
-            }
-        }
+        adapter = SearchAdapter(trackList, onClickListener = {track -> onClickEvent(track)})
+//            if (viewModel.clickDebounce(track)) {
+//                val action = findNavController().navigate(R.id.action_searchFragment_to_playerFragment, PlayerFragment.createArgs(track))
+//                }
 
-        historyAdapter = SearchAdapter(mutableListOf()) { track ->
-            if (viewModel.clickDebounce(track)) {
-                val action = findNavController().navigate(R.id.action_searchFragment_to_playerFragment, PlayerFragment.createArgs(track))
-            }
-        }
+
+
+        historyAdapter = SearchAdapter(mutableListOf(), onClickListener =  { track -> onClickEvent(track)})
+//            if (viewModel.clickDebounce(track)) {
+//                val action = findNavController().navigate(R.id.action_searchFragment_to_playerFragment, PlayerFragment.createArgs(track))
+//            }
+
         binding.searchResults.layoutManager = LinearLayoutManager(requireContext())
         binding.searchResults.adapter = adapter
         binding.searchResults.setHasFixedSize(true)
 
         binding.searchedTracks.layoutManager = LinearLayoutManager(requireContext())
         binding.searchedTracks.adapter = historyAdapter
+    }
+    private  fun onClickEvent(track: Track){
+        if (viewModel.clickDebounce(track)) {
+            val action = findNavController().navigate(R.id.action_searchFragment_to_playerFragment, PlayerFragment.createArgs(track))
+        }
     }
     private fun searchTrack(searchValue: String){
         viewModel.searchTrack(searchValue)

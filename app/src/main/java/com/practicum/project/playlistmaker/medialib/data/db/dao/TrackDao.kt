@@ -16,11 +16,14 @@ interface TrackDao {
     @Delete
     suspend fun deleteTrack(track: TrackEntity)
 
-    @Query("select * from track_table")
+    @Query("select * from track_table order by timestamp DESC")
     fun getTrackList(): Flow<List<TrackEntity>>
 
     @Query("select trackId from track_table order by timestamp DESC")
     suspend fun getTracksId(): List<Int>
+
+    @Query("SELECT * FROM track_table WHERE trackId IN (:ids)")
+    suspend fun getTracksByIds(ids: List<Int>): List<TrackEntity>
 
     @Query("select COUNT(*) from track_table where trackId = :trackId")
     suspend fun isFavorite(trackId: Int): Boolean

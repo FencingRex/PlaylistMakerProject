@@ -21,10 +21,10 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 import kotlin.getValue
 
-class NewPlaylistFragment: Fragment() {
-    private val viewModel by viewModel<PlaylistsViewModel>()
+open class NewPlaylistFragment: Fragment() {
+    open val viewModel by viewModel<PlaylistsViewModel>()
     private var _binding: NewPlaylistFragmentBinding? = null
-    private val binding get() =  _binding!!
+    val binding get() =  _binding!!
     private var playlistName: String = ""
     private var playlistDescription: String = ""
     private var coverSelected: Boolean = false

@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.practicum.project.playlistmaker.databinding.FragmentPlaylistsBinding
 import com.practicum.project.playlistmaker.medialib.model.Playlist
 import com.practicum.project.playlistmaker.medialib.model.PlaylistState
+import com.practicum.project.playlistmaker.playlist.ui.PlaylistFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlaylistsFragment: Fragment() {
@@ -35,7 +36,7 @@ class PlaylistsFragment: Fragment() {
             findNavController().navigate(R.id.action_mediaLibraryFragment_to_newPlaylistFragment)
         }
         setRecyclerView()
-        viewModel.playlistState.observe(viewLifecycleOwner){state ->
+        viewModel.playlistStateLiveData.observe(viewLifecycleOwner){state ->
             when(state){
                 is PlaylistState.Empty ->{
                     binding.placeholderImage.visibility = View.VISIBLE
@@ -64,7 +65,8 @@ class PlaylistsFragment: Fragment() {
 
         adapter = PlaylistsAdapter(playlists) { playlist ->
             if (viewModel.clickDebounce(playlist)) {
-                val action = findNavController().navigate(R.id.action_mediaLibraryFragment_to_playerFragment)
+                val action = findNavController().navigate(R.id.action_mediaLibraryFragment_to_playlistFragment,
+                    args = PlaylistFragment.createArgs(playlist))
             }
         }
         binding.foundedPlaylist.layoutManager = GridLayoutManager(requireContext(),2)

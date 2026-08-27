@@ -1,7 +1,6 @@
 package com.practicum.project.playlistmaker.medialib.ui
 
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -11,35 +10,35 @@ import com.practicum.project.playlistmaker.medialib.model.Playlist
 import com.practicum.project.playlistmaker.medialib.model.PlaylistState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.Int
+import kotlin.String
 
-class PlaylistsViewModel(private val playlistInteractor: PlaylistInteractor): ViewModel() {
+open class PlaylistsViewModel(private val playlistInteractor: PlaylistInteractor): ViewModel() {
     private val playlistLiveData = MutableLiveData<PlaylistState>()
     private val _savedCoverPath = MutableLiveData<String?>()
     private var isClickAllowed = true
     val savedCoverPath: LiveData<String?> = _savedCoverPath
-    val playlistState: LiveData<PlaylistState> = playlistLiveData
+    val playlistStateLiveData: LiveData<PlaylistState> = playlistLiveData
 
     init {
         viewModelScope.launch {
             getPlaylists()
         }
     }
-
     fun createPlaylist(name: String, description: String) {
         val coverUri = _savedCoverPath.value.orEmpty()
-        Log.d("Cover path","${coverUri}")
         viewModelScope.launch {
             playlistInteractor.addPlaylist(
                 Playlist(
                     name = name,
                     description = description,
                     coverUri = coverUri,
+                    tracksId = "[]",
                     tracksQty = 0
                 )
             )
         }
     }
-
     fun getPlaylists() {
         viewModelScope.launch {
             playlistInteractor.getAllPlaylists().collect {
@@ -54,7 +53,6 @@ class PlaylistsViewModel(private val playlistInteractor: PlaylistInteractor): Vi
     private fun setState(state: PlaylistState) {
         playlistLiveData.postValue(state)
     }
-
     fun saveCover(uri: Uri) {
         viewModelScope.launch {
             val path = playlistInteractor.saveCover(uri)
