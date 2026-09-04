@@ -14,6 +14,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.practicum.project.playlistmaker.R
 import com.practicum.project.playlistmaker.medialib.model.FavoritesState
 import com.practicum.project.playlistmaker.player.ui.PlayerFragment
+import com.practicum.project.playlistmaker.search.domain.models.Track
 
 
 class FavoritesFragment: Fragment() {
@@ -54,16 +55,18 @@ class FavoritesFragment: Fragment() {
     }
 
     private fun setRecyclerVew(){
-        favoritesAdapter = SearchAdapter(mutableListOf()) { track ->
-            findNavController().navigate(
+        favoritesAdapter = SearchAdapter(
+            mutableListOf(),
+            onClickListener = { track ->
+                findNavController().navigate(
                 R.id.action_mediaLibraryFragment_to_playerFragment,
                 PlayerFragment.createArgs(track)
-            )
-        }
+                )
+            }
+        )
         binding.favoritesTracks.layoutManager = LinearLayoutManager(requireContext())
         binding.favoritesTracks.adapter = favoritesAdapter
     }
-
     private fun showEmpty(){
         binding.placeholderContainer.isVisible = true
         binding.placeholderImage.isVisible = true

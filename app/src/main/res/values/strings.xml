@@ -43,4 +43,15 @@
     <string name="addedToPlaylist">Добавлено в плейлист %s»</string>
     <string name="alreadyExists">Трек уже добавлен в плейлист %s</string>
     <string name="playlistNotFound">Плейлист не найден</string>
+    <string name="emptyPlaylist" translatable="false">Данный плейлист пуст</string>
+    <string name="sharePlaylist" translatable="false">Поделиться</string>
+    <string name="editPlaylist" translatable="false">Редактировать информацию</string>
+    <string name="deletePlaylist" translatable="false">Удалить плейлист</string>
+    <string name="deletePlaylistConfirm" translatable="false">Хотите удалить плейлист?</string>
+    <string name="deleteTrack" translatable="false">Хотите удалить трек?</string>
+    <string name="yes" translatable="false">Да</string>
+    <string name="no" translatable="false">Нет</string>
+    <string name="shareEmptyPlaylist" translatable="false">В этом плейлисте нет списка треков, которым можно поделиться</string>
+    <string name="editPlaylistHeader" translatable="false">Редактировать</string>
+    <string name="saveChanges" translatable="false">Сохранить</string>
 </resources>

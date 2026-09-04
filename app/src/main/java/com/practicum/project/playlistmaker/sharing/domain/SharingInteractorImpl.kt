@@ -33,6 +33,10 @@ class SharingInteractorImpl(
         )
     }
 
+    override fun sharePlaylist(message: String, title: String) {
+        externalNavigator.sharePlaylist(message, title)
+    }
+
     private fun getTermsAgreementData(): TermsData {
         return TermsData(repository.getUserAgreementUrl())
     }

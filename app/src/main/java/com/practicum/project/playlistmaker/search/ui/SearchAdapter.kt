@@ -6,7 +6,8 @@ import com.practicum.project.playlistmaker.search.domain.models.Track
 
 class SearchAdapter(
     private var searchResults: List<Track>,
-    private val onClickListener: (Track) -> Unit):
+    private val onClickListener: (Track) -> Unit,
+    private val onLongClickListener: ((Track) -> Unit)? = null):
     RecyclerView.Adapter<SearchViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewHolder {
@@ -19,6 +20,14 @@ class SearchAdapter(
 
         holder.itemView.setOnClickListener {
             onClickListener(track)
+        }
+        if (onLongClickListener != null){
+            holder.itemView.setOnLongClickListener {
+                onLongClickListener(track)
+                true
+            }
+        } else {
+            holder.itemView.setOnLongClickListener(null)
         }
     }
 

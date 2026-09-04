@@ -14,6 +14,7 @@ import com.practicum.project.playlistmaker.sharing.ExternalNavigator
 import com.practicum.project.playlistmaker.sharing.data.ExternalNavigatorImpl
 import com.practicum.project.playlistmaker.sharing.domain.SharingInteractor
 import com.practicum.project.playlistmaker.sharing.domain.SharingInteractorImpl
+import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
 val interactorModule = module {
@@ -30,7 +31,7 @@ val interactorModule = module {
         SharingInteractorImpl(get(),get())
     }
     factory<ExternalNavigator>{
-        ExternalNavigatorImpl()
+        ExternalNavigatorImpl(androidContext())
     }
     single<FavoritesInteractor>{
         FavoritesInteractorImpl(get())

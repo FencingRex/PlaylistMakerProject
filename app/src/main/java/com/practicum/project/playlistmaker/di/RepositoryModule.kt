@@ -34,7 +34,7 @@ val repositoryModule = module {
         SharingRepositoryImpl(androidContext())
     }
     single<ExternalNavigator> {
-        ExternalNavigatorImpl()
+        ExternalNavigatorImpl(androidContext())
     }
     factory{
         TrackDbConverter()
@@ -46,6 +46,6 @@ val repositoryModule = module {
         PlaylistDbConverter()
     }
     single<PlaylistRepository> {
-        PlaylistRepositoryImpl(get(),get(),get(),get())
+        PlaylistRepositoryImpl(get(),get(),get())
     }
 }

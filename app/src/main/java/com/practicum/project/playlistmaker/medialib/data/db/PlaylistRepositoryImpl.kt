@@ -3,8 +3,8 @@ package com.practicum.project.playlistmaker.medialib.data.db
 import android.content.Context
 import android.net.Uri
 import android.os.Environment
-import com.google.gson.Gson
 import com.practicum.project.playlistmaker.medialib.data.converters.PlaylistDbConverter
+import com.practicum.project.playlistmaker.medialib.data.converters.PlaylistTrackConverter
 import com.practicum.project.playlistmaker.medialib.data.db.entity.PlaylistEntity
 import com.practicum.project.playlistmaker.medialib.domain.PlaylistRepository
 import com.practicum.project.playlistmaker.medialib.model.Playlist
@@ -15,9 +15,8 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import okio.IOException
-import com.google.gson.reflect.TypeToken
 import com.practicum.project.playlistmaker.medialib.model.AddTrackResult
-import com.practicum.project.playlistmaker.player.ui.PlayerViewModel
+import com.practicum.project.playlistmaker.playlist.data.PlaylistWithTracks
 import java.io.File
 import java.io.FileOutputStream
 import kotlin.collections.map
@@ -25,8 +24,7 @@ import kotlin.collections.map
 class PlaylistRepositoryImpl(
     private val appDatabase: AppDatabase,
     private val converter: PlaylistDbConverter,
-    private val context: Context,
-    private val gson: Gson
+    private val context: Context
 ): PlaylistRepository {
     override suspend fun addPlaylist(playlist: Playlist) {
         appDatabase.playlistsDao().addPlaylist(converter.toEntity(playlist))
@@ -38,39 +36,63 @@ class PlaylistRepositoryImpl(
         }.distinctUntilChanged()
     }
 
-    override suspend fun addTrackToPlaylist(trackId: Int, playlistId: Long) : AddTrackResult {
-        return withContext(Dispatchers.IO) {
-            try {
-                val playlist = appDatabase.playlistsDao().getPlaylistById(playlistId)
-                    ?: return@withContext AddTrackResult.PlaylistNotFound
+    override suspend fun getPlaylistById(playlistId: Long): Flow<List<Playlist>> {
+        return appDatabase.playlistsDao().selectPlaylistById(playlistId)
+            .map { playlistEntity -> convertFromEntity(playlistEntity) }
+            .distinctUntilChanged()
+    }
 
-                val type = object : TypeToken<List<Int>>() {}.type
-                val tracks: MutableList<Int> = Gson().fromJson(playlist.tracksID, type)
-                    ?: mutableListOf()
+    override suspend fun getTracksFromPlaylist(playlistId: Long): Flow<PlaylistWithTracks?>{
+        return appDatabase.playlistsDao().getPlaylistWithTracks(playlistId)
+    }
 
-                if (tracks.contains(trackId)) {
-                    return@withContext AddTrackResult.AlreadyExists(playlist.name)
-                }
-                tracks.add(trackId)
-                val newTracks = Gson().toJson(tracks)
-                val updatedPlaylist = playlist.copy(
-                    tracksID = newTracks,
-                    tracksQty = tracks.size
-                )
-                appDatabase.playlistsDao().updatePlaylist(updatedPlaylist)
-                return@withContext AddTrackResult.Success(playlist.name )
-            } catch (e: Exception) {
-                return@withContext AddTrackResult.Error
-            }
-        }
+    override suspend fun checkIsTrackNotInPlaylist(playlistId: Long, trackId: Int): Boolean {
+        val inPlaylistCount = appDatabase.playlistsDao().checkTrackInPlaylist(playlistId,trackId)
+        if (inPlaylistCount == 0) {
+            return true
+        } else return false
+    }
+
+    override suspend fun addTrackToPlaylist(playlistId: Long, track: Track): AddTrackResult {
+       return withContext(Dispatchers.IO){
+           try {
+               val playlistEntity = appDatabase.playlistsDao().getPlaylistById(playlistId)
+                   ?: return@withContext AddTrackResult.PlaylistNotFound
+
+               val exists =
+                   appDatabase.playlistsDao().checkTrackInPlaylist(playlistId, track.trackId) > 0
+               if (exists) {
+                   return@withContext AddTrackResult.AlreadyExists(playlistEntity.name)
+               }
+
+               val playlistTrack = PlaylistTrackConverter.fromDomain(track, playlistId)
+               appDatabase.playlistsDao().insertPlaylistTrack(playlistTrack)
+
+               val playlistSize = appDatabase.playlistsDao().getTracksCount(playlistId)
+
+               val updatedPlaylist = playlistEntity.copy(
+                   tracksQty = playlistSize
+               )
+               appDatabase.playlistsDao().updatePlaylist(updatedPlaylist)
+
+               return@withContext AddTrackResult.Success(playlistEntity.name)
+           } catch (e: Exception) {
+               e.printStackTrace()
+               return@withContext AddTrackResult.Error
+           }
+       }
     }
 
     override suspend fun updatePlaylist(playlist: Playlist) {
         appDatabase.playlistsDao().updatePlaylist(converter.toEntity(playlist))
     }
 
-    override suspend fun deletePlaylist(playlist: Playlist) {
-        appDatabase.playlistsDao().deletePlaylist(converter.toEntity(playlist))
+    override suspend fun deletePlaylist(playlistId: Long) {
+        appDatabase.playlistsDao().deletePlaylistWithTracks(playlistId)
+    }
+
+    override suspend fun deleteTrack(playlistId: Long, trackId: Int) {
+        appDatabase.playlistsDao().deleteTrackFromPlaylist(playlistId, trackId)
     }
 
     private fun convertFromEntity(playlist: List<PlaylistEntity>): List<Playlist>{

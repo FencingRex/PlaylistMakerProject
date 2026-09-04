@@ -6,4 +6,5 @@ interface SharingInteractor {
     fun shareApp(): Intent
     fun openTermsLink(): Intent
     fun openSupport(): Intent
+    fun sharePlaylist(message: String, title: String)
 }
