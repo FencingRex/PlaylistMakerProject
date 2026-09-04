@@ -18,6 +18,6 @@ interface PlaylistRepository {
     suspend fun updatePlaylist(playlist: Playlist)
     suspend fun deletePlaylist(playlistId: Long)
     suspend fun deleteTrack(playlistId: Long,trackId: Int)
-    suspend fun checkIsTrackInPlaylist(playlistId: Long, trackId: Int): Boolean
+    suspend fun checkIsTrackNotInPlaylist(playlistId: Long, trackId: Int): Boolean
     suspend fun saveCover(uri: Uri): String?
 }

@@ -169,16 +169,8 @@ class SearchFragment : Fragment() {
     private fun setRecyclerView(){
 
         adapter = SearchAdapter(trackList, onClickListener = {track -> onClickEvent(track)})
-//            if (viewModel.clickDebounce(track)) {
-//                val action = findNavController().navigate(R.id.action_searchFragment_to_playerFragment, PlayerFragment.createArgs(track))
-//                }
-
-
 
         historyAdapter = SearchAdapter(mutableListOf(), onClickListener =  { track -> onClickEvent(track)})
-//            if (viewModel.clickDebounce(track)) {
-//                val action = findNavController().navigate(R.id.action_searchFragment_to_playerFragment, PlayerFragment.createArgs(track))
-//            }
 
         binding.searchResults.layoutManager = LinearLayoutManager(requireContext())
         binding.searchResults.adapter = adapter

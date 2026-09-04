@@ -18,5 +18,5 @@ interface PlaylistInteractor {
     suspend fun deletePlaylist(playlistId: Long)
     suspend fun deleteTrack(playlistId: Long, trackId: Int)
     suspend fun saveCover(uri: Uri): String?
-    suspend fun checkIsTrackInPlaylist(playlistId: Long, trackId: Int): Boolean
+    suspend fun checkIsTrackNotInPlaylist(playlistId: Long, trackId: Int): Boolean
 }

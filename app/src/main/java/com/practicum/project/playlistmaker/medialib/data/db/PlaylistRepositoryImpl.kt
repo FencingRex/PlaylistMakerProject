@@ -3,8 +3,6 @@ package com.practicum.project.playlistmaker.medialib.data.db
 import android.content.Context
 import android.net.Uri
 import android.os.Environment
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.practicum.project.playlistmaker.medialib.data.converters.PlaylistDbConverter
 import com.practicum.project.playlistmaker.medialib.data.converters.PlaylistTrackConverter
 import com.practicum.project.playlistmaker.medialib.data.db.entity.PlaylistEntity
@@ -17,7 +15,6 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import okio.IOException
-import com.practicum.project.playlistmaker.medialib.data.converters.TrackDbConverter
 import com.practicum.project.playlistmaker.medialib.model.AddTrackResult
 import com.practicum.project.playlistmaker.playlist.data.PlaylistWithTracks
 import java.io.File
@@ -49,7 +46,7 @@ class PlaylistRepositoryImpl(
         return appDatabase.playlistsDao().getPlaylistWithTracks(playlistId)
     }
 
-    override suspend fun checkIsTrackInPlaylist(playlistId: Long, trackId: Int): Boolean {
+    override suspend fun checkIsTrackNotInPlaylist(playlistId: Long, trackId: Int): Boolean {
         val inPlaylistCount = appDatabase.playlistsDao().checkTrackInPlaylist(playlistId,trackId)
         if (inPlaylistCount == 0) {
             return true

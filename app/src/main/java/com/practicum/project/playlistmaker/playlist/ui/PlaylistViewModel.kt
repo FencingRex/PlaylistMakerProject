@@ -37,8 +37,7 @@ class PlaylistViewModel(
                 playlistsWithTracks?.let { data ->
                     val domainTracks = PlaylistTrackConverter.toDomainList(data.tracks)
                     val totalInMillis = data.tracks.sumOf { it.trackTimeMillis }
-                    val formattedTime = SimpleDateFormat("mm", Locale.getDefault())
-                        .format(totalInMillis)
+                    val minutesDuration = (totalInMillis / 60_000).toInt()
                     Log.d("qty test","${data.tracks.size}")
                     playlistStateLiveData.postValue(
                         PlaylistEditState(
@@ -46,7 +45,7 @@ class PlaylistViewModel(
                             name = data.playlist.name,
                             description = data.playlist.description,
                             tracksCount = domainTracks.size,
-                            totalDurationTracks = formattedTime,
+                            totalDurationTracks = minutesDuration.toString(),
                             tracks = domainTracks
                         )
                     )

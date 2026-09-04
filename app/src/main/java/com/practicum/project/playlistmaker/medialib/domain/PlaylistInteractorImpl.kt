@@ -39,8 +39,8 @@ class PlaylistInteractorImpl(private val playlistRepository: PlaylistRepository)
         playlistRepository.updatePlaylist(playlist)
     }
 
-    override suspend fun checkIsTrackInPlaylist(playlistId: Long, trackId: Int): Boolean {
-        return playlistRepository.checkIsTrackInPlaylist(playlistId, trackId)
+    override suspend fun checkIsTrackNotInPlaylist(playlistId: Long, trackId: Int): Boolean {
+        return playlistRepository.checkIsTrackNotInPlaylist(playlistId, trackId)
     }
     override suspend fun saveCover(uri: Uri): String? {
        return playlistRepository.saveCover(uri)
